@@ -54,7 +54,7 @@
                                 android:layout_alignParentEnd="true"
                                 android:layout_centerInParent="true"
                                 android:padding="@dimen/_2sdp"
-                                android:background="@drawable/circlewhite"
+                                android:background="@drawable/circlegreen"
                                 android:src="@drawable/ic_call_black_24dp"/>
 
 
