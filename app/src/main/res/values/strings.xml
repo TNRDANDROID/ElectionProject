@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">ElectionWardPhoneNumbers</string>
+    <string name="font_circular_bold">circular-bold.ttf</string>
+    <string name="font_circular_book">circular-book.ttf</string>
+    <string name="font_normal">din_pro_light.otf</string>
+
+
+</resources>

@@ -1,0 +1,9 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="margin_left_20dp">20dp</dimen>
+    <dimen name="menu_title_size">12dp</dimen>
+    <dimen name="header">50dp</dimen>
+    <dimen name="padding">15dp</dimen>
+
+
+</resources>
