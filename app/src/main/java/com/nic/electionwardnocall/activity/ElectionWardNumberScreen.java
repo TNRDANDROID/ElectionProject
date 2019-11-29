@@ -59,6 +59,7 @@ public class ElectionWardNumberScreen extends AppCompatActivity implements MyDia
         wardNumberBinding.wardTv.animate().translationX(0).alpha(1).setDuration(1500).setStartDelay(1100).start();
         wardNumberBinding.card.animate().translationX(0).alpha(1).setDuration(1600).setStartDelay(1200).start();
 
+
         wardNumberBinding.card.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
