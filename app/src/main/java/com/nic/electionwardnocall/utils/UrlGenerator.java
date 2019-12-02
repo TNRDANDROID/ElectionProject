@@ -24,9 +24,12 @@ public class UrlGenerator {
 //        return "http://10.163.19.140/rdweb/project/webservices_forms/work_monitoring/work_monitoring_services_test.php";
     }
 
-
     public static String getTnrdHostName() {
         return NICApplication.getAppString(R.string.TNRD_HOST_NAME);
+    }
+
+    public static String getOpenUrl() {
+        return NICApplication.getAppString(R.string.OPEN_SERVICES_URL);
     }
 
 

@@ -12,7 +12,6 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 
-
 import com.nic.electionwardnocall.R;
 import com.nic.electionwardnocall.application.NICApplication;
 import com.nic.electionwardnocall.constant.AppConstant;
@@ -101,21 +100,6 @@ public class Utils {
         check = phone2.length() == 10;
         return check;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public static String randomChar() {
         char[] chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".toCharArray();
@@ -264,6 +248,20 @@ public class Utils {
     public static JSONObject districtListJsonParams() throws JSONException {
         JSONObject dataSet = new JSONObject();
         dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_DISTRICT_LIST_ALL);
+        Log.d("object", "" + dataSet);
+        return dataSet;
+    }
+
+    public static JSONObject blockListJsonParams() throws JSONException {
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_BLOCK_LIST_ALL);
+        Log.d("object", "" + dataSet);
+        return dataSet;
+    }
+
+    public static JSONObject villageListJsonParams() throws JSONException {
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_VILLAGE_LIST_ALL);
         Log.d("object", "" + dataSet);
         return dataSet;
     }

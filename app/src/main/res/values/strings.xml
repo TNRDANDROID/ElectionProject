@@ -3,6 +3,7 @@
     <string name="font_circular_bold">circular-bold.ttf</string>
     <string name="font_circular_book">circular-book.ttf</string>
     <string name="font_normal">din_pro_light.otf</string>
+    <string name="no_internet">Your internet seems to be offline!</string>
 
 
 </resources>
