@@ -700,7 +700,11 @@ public class ElectionWardNumberScreen extends AppCompatActivity implements MyDia
 
 
     public void closeApplication() {
-        new MyDialog(this).exitDialog(this, "Are you sure you want to Logout?", "Logout");
+        if(!Utils.isOnline()) {
+            Utils.showAlert(this,"Logging out while offline may leads to loss of data!");
+        }else {
+            new MyDialog(this).exitDialog(this, "Are you sure you want to Logout?", "Logout");
+        }
     }
 
     @Override
