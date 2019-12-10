@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
@@ -244,6 +246,19 @@ public class Utils {
         }
     }
 
+    //Version name
+    public static String getVersionName(Context context) {
+        PackageManager manager = context.getPackageManager();
+        PackageInfo info = null;
+        try {
+            info = manager.getPackageInfo(
+                    context.getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        String version = info.versionName;
+        return version;
+    }
 
     public static JSONObject districtListJsonParams() throws JSONException {
         JSONObject dataSet = new JSONObject();
@@ -259,9 +274,9 @@ public class Utils {
         return dataSet;
     }
 
-    public static JSONObject villageListJsonParams() throws JSONException {
+    public static JSONObject roDetailsListJsonParams() throws JSONException {
         JSONObject dataSet = new JSONObject();
-        dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_VILLAGE_LIST_ALL);
+        dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.RO_USER_DETAILS);
         Log.d("object", "" + dataSet);
         return dataSet;
     }

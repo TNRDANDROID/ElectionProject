@@ -8,8 +8,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.nic.electionwardnocall.DataBase.dbData;
 import com.nic.electionwardnocall.R;
-
+import com.nic.electionwardnocall.Session.PrefManager;
+import com.nic.electionwardnocall.utils.Utils;
 
 
 /**
@@ -17,13 +19,13 @@ import com.nic.electionwardnocall.R;
  */
 public class MyDialog {
     public myOnClickListener myListener;
-//    private dbData dbData;
-//    private PrefManager prefManager;
+    private dbData dbData;
+    private PrefManager prefManager;
 
     public MyDialog(Activity context) {
-//        prefManager         = new PrefManager(context);
+        prefManager         = new PrefManager(context);
         this.myListener = (myOnClickListener) context;
-//        dbData = new dbData(context);
+        dbData = new dbData(context);
 
     }
 
@@ -61,10 +63,10 @@ public class MyDialog {
 //                    imgLoader.clearCache();
 //                }
                 if(type.equals("Logout")) {
-//                    dbData.open();
-//                    dbData.deleteAll();
-//                    Utils.clearApplicationData(activity);
-//                    prefManager.clearSession();
+                    dbData.open();
+                    dbData.deleteAllTables();
+                    Utils.clearApplicationData(activity);
+                    prefManager.clearSession();
                 }
 
 

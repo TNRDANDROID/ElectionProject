@@ -9,9 +9,8 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "ElectionWardNoCall";
     private static final int DATABASE_VERSION = 1;
 
-    public static final String DISTRICT_TABLE_NAME = "ODF_DistrictTable";
-    public static final String BLOCK_TABLE_NAME = "ODF_BlockTable";
-    public static final String VILLAGE_TABLE_NAME = "ODF_villageTable";
+
+    public static final String RO_USER_TABLE_NAME = "RO_UserTable";
     private Context context;
 
     public DBHelper(Context context) {
@@ -23,20 +22,17 @@ public class DBHelper extends SQLiteOpenHelper {
     //creating tables
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE " + DISTRICT_TABLE_NAME + " ("
-                + "dcode INTEGER," +
-                "dname TEXT)");
 
-        db.execSQL("CREATE TABLE " + BLOCK_TABLE_NAME + " ("
-                + "dcode INTEGER," +
-                "bcode INTEGER," +
-                "bname varchar(32))");
 
-        db.execSQL("CREATE TABLE " + VILLAGE_TABLE_NAME  + " ("
-                + "dcode INTEGER," +
-                "bcode INTEGER," +
-                "pvcode INTEGER," +
-                "pvname varchar(32))");
+        db.execSQL("CREATE TABLE " + RO_USER_TABLE_NAME + " ("
+                + "district_code INTEGER," +
+                "district_name TEXT," +
+                "localbody_no INTEGER," +
+                "localbody_name TEXT," +
+                "ro_user_name TEXT," +
+                "ro_mobile_no TEXT," +
+                "localbody_type TEXT," +
+                "localbody_abbr TEXT)");
 
 
     }
@@ -45,9 +41,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (oldVersion >= newVersion) {
             //drop table if already exists
-            db.execSQL("DROP TABLE IF EXISTS " + DISTRICT_TABLE_NAME);
-            db.execSQL("DROP TABLE IF EXISTS " + BLOCK_TABLE_NAME);
-            db.execSQL("DROP TABLE IF EXISTS " + VILLAGE_TABLE_NAME);
+            db.execSQL("DROP TABLE IF EXISTS " + RO_USER_TABLE_NAME);
             onCreate(db);
         }
     }

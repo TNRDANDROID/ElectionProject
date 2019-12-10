@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-
 import com.nic.electionwardnocall.R;
 import com.nic.electionwardnocall.pojo.ElectionWardNoCall;
 
@@ -55,9 +54,15 @@ public class CommonAdapter extends BaseAdapter {
         if (type.equalsIgnoreCase("DistrictList")) {
             tv_type.setText(electionWardNoCall.getDistrictName());
         } else if (type.equalsIgnoreCase("BlockList")) {
-            tv_type.setText(electionWardNoCall.getBlockName());
-        } else if (type.equalsIgnoreCase("VillageList")) {
-            tv_type.setText(electionWardNoCall.getPvName());
+            tv_type.setText(electionWardNoCall.getLocalBodyName());
+        } else if (type.equalsIgnoreCase("RuralUrbanList")) {
+            tv_type.setText(electionWardNoCall.getRuralUrbanName());
+        } else if (type.equalsIgnoreCase("MunicipalityList")) {
+            tv_type.setText(electionWardNoCall.getLocalBodyName());
+        } else if (type.equalsIgnoreCase("TownPanchayatList")) {
+            tv_type.setText(electionWardNoCall.getLocalBodyName());
+        } else if (type.equalsIgnoreCase("CorporationList")) {
+            tv_type.setText(electionWardNoCall.getLocalBodyName());
         }
         return view;
     }

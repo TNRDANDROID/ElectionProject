@@ -15,6 +15,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
@@ -39,6 +40,7 @@ import com.nic.electionwardnocall.constant.AppConstant;
 import com.nic.electionwardnocall.databinding.WardNumberBinding;
 import com.nic.electionwardnocall.dialog.MyDialog;
 import com.nic.electionwardnocall.pojo.ElectionWardNoCall;
+import com.nic.electionwardnocall.support.ProgressHUD;
 import com.nic.electionwardnocall.utils.UrlGenerator;
 import com.nic.electionwardnocall.utils.Utils;
 
@@ -49,13 +51,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.nic.electionwardnocall.DataBase.DBHelper.BLOCK_TABLE_NAME;
-import static com.nic.electionwardnocall.DataBase.DBHelper.DISTRICT_TABLE_NAME;
-import static com.nic.electionwardnocall.DataBase.DBHelper.VILLAGE_TABLE_NAME;
-import static com.nic.electionwardnocall.utils.Utils.blockListJsonParams;
-import static com.nic.electionwardnocall.utils.Utils.districtListJsonParams;
-import static com.nic.electionwardnocall.utils.Utils.villageListJsonParams;
-
+import static com.nic.electionwardnocall.DataBase.DBHelper.RO_USER_TABLE_NAME;
 
 public class ElectionWardNumberScreen extends AppCompatActivity implements MyDialog.myOnClickListener, Api.ServerResponseListener {
 
@@ -63,7 +59,6 @@ public class ElectionWardNumberScreen extends AppCompatActivity implements MyDia
     private List<String> RuralUrbanList = new ArrayList<>();
     private List<ElectionWardNoCall> District = new ArrayList<>();
     private List<ElectionWardNoCall> Block = new ArrayList<>();
-    private List<ElectionWardNoCall> Village = new ArrayList<>();
     public dbData dbData = new dbData(this);
     private SQLiteDatabase db;
     public static DBHelper dbHelper;
@@ -71,12 +66,13 @@ public class ElectionWardNumberScreen extends AppCompatActivity implements MyDia
     final Handler handler = new Handler();
     private PrefManager prefManager;
     String pref_Block, pref_district, pref_Village;
-
+    boolean isPanchayatUnion, isMunicipality, isTownPanchayat, isCorporation;
+    private ProgressHUD progressHUD;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         wardNumberBinding = DataBindingUtil.setContentView(this, R.layout.ward_number);
         wardNumberBinding.setActivity(this);
 
@@ -96,8 +92,7 @@ public class ElectionWardNumberScreen extends AppCompatActivity implements MyDia
 
         wardNumberBinding.selectVillageTv.setTranslationX(800);
         wardNumberBinding.villageLayout.setTranslationX(800);
-        wardNumberBinding.wardTv.setTranslationX(800);
-        wardNumberBinding.card.setTranslationX(800);
+        wardNumberBinding.call.setTranslationY(400);
 
         wardNumberBinding.selectRuralUrbanTv.setAlpha(0);
         wardNumberBinding.ruralUrbanLayout.setAlpha(0);
@@ -105,8 +100,6 @@ public class ElectionWardNumberScreen extends AppCompatActivity implements MyDia
         wardNumberBinding.districtLayout.setAlpha(0);
         wardNumberBinding.selectVillageTv.setAlpha(0);
         wardNumberBinding.villageLayout.setAlpha(0);
-        wardNumberBinding.wardTv.setAlpha(0);
-        wardNumberBinding.card.setAlpha(0);
 
         wardNumberBinding.selectRuralUrbanTv.animate().translationX(0).alpha(1).setDuration(800).setStartDelay(400).start();
         wardNumberBinding.ruralUrbanLayout.animate().translationX(0).alpha(1).setDuration(1000).setStartDelay(600).start();
@@ -114,44 +107,79 @@ public class ElectionWardNumberScreen extends AppCompatActivity implements MyDia
         wardNumberBinding.districtLayout.animate().translationX(0).alpha(1).setDuration(1400).setStartDelay(1000).start();
         wardNumberBinding.selectVillageTv.animate().translationX(0).alpha(1).setDuration(1500).setStartDelay(1200).start();
         wardNumberBinding.villageLayout.animate().translationX(0).alpha(1).setDuration(1600).setStartDelay(1400).start();
-        wardNumberBinding.wardTv.animate().translationX(0).alpha(1).setDuration(1700).setStartDelay(1600).start();
-        wardNumberBinding.card.animate().translationX(0).alpha(1).setDuration(1800).setStartDelay(1800).start();
-
+        wardNumberBinding.call.animate().translationY(0).alpha(1).setDuration(1800).setStartDelay(1600).start();
         loadOfflineRuralUrbanListDBValues();
         if (Utils.isOnline()) {
             fetchApi();
         } else {
             Utils.showAlert(this, getResources().getString(R.string.no_internet));
         }
+
         wardNumberBinding.ruralUrbanSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position == 0) {
-                    wardNumberBinding.selectVillageTv.setText("Village Name");
+                    isPanchayatUnion = false;
+                    isMunicipality = false;
+                    isTownPanchayat = false;
+                    isCorporation = false;
+                    loadOfflineDistrictListDBValues();
+                    wardNumberBinding.phoneNo.setText("");
                     wardNumberBinding.selectBlockTv.setVisibility(View.GONE);
                     wardNumberBinding.blockLayout.setVisibility(View.GONE);
+                    wardNumberBinding.wardTv.setVisibility(View.GONE);
+                    wardNumberBinding.pollingStationName.setVisibility(View.GONE);
                 } else if (position == 1) {
-                    wardNumberBinding.selectVillageTv.setText("Village Name");
+                    isPanchayatUnion = true;
+                    isMunicipality = false;
+                    isTownPanchayat = false;
+                    isCorporation = false;
+                    wardNumberBinding.selectBlockTv.setText("Local Body Name");
+                    loadOfflineDistrictListDBValues();
+                    wardNumberBinding.phoneNo.setText("");
                     wardNumberBinding.selectBlockTv.setVisibility(View.VISIBLE);
                     wardNumberBinding.blockLayout.setVisibility(View.VISIBLE);
+                    wardNumberBinding.wardTv.setVisibility(View.GONE);
+                    wardNumberBinding.pollingStationName.setVisibility(View.GONE);
                 } else if (position == 2) {
-                    wardNumberBinding.selectVillageTv.setText("Municipality");
+                    isPanchayatUnion = false;
+                    isMunicipality = true;
+                    isTownPanchayat = false;
+                    isCorporation = false;
+                    wardNumberBinding.selectBlockTv.setText("Municipality");
                     loadOfflineDistrictListDBValues();
-                    wardNumberBinding.villageSpinner.setAdapter(null);
-                    wardNumberBinding.selectBlockTv.setVisibility(View.GONE);
-                    wardNumberBinding.blockLayout.setVisibility(View.GONE);
+                    wardNumberBinding.phoneNo.setText("");
+                    wardNumberBinding.blockSpinner.setAdapter(null);
+                    wardNumberBinding.selectBlockTv.setVisibility(View.VISIBLE);
+                    wardNumberBinding.blockLayout.setVisibility(View.VISIBLE);
+                    wardNumberBinding.wardTv.setVisibility(View.GONE);
+                    wardNumberBinding.pollingStationName.setVisibility(View.GONE);
                 } else if (position == 3) {
-                    wardNumberBinding.selectVillageTv.setText("Town Panchayat");
+                    isPanchayatUnion = false;
+                    isMunicipality = false;
+                    isTownPanchayat = true;
+                    isCorporation = false;
+                    wardNumberBinding.selectBlockTv.setText("Town Panchayat");
                     loadOfflineDistrictListDBValues();
-                    wardNumberBinding.villageSpinner.setAdapter(null);
-                    wardNumberBinding.selectBlockTv.setVisibility(View.GONE);
-                    wardNumberBinding.blockLayout.setVisibility(View.GONE);
+                    wardNumberBinding.phoneNo.setText("");
+                    wardNumberBinding.blockSpinner.setAdapter(null);
+                    wardNumberBinding.selectBlockTv.setVisibility(View.VISIBLE);
+                    wardNumberBinding.blockLayout.setVisibility(View.VISIBLE);
+                    wardNumberBinding.wardTv.setVisibility(View.GONE);
+                    wardNumberBinding.pollingStationName.setVisibility(View.GONE);
                 } else if (position == 4) {
-                    wardNumberBinding.selectVillageTv.setText("Corporation");
+                    isPanchayatUnion = false;
+                    isMunicipality = false;
+                    isTownPanchayat = false;
+                    isCorporation = true;
+                    wardNumberBinding.selectBlockTv.setText("Corporation");
                     loadOfflineDistrictListDBValues();
-                    wardNumberBinding.villageSpinner.setAdapter(null);
-                    wardNumberBinding.selectBlockTv.setVisibility(View.GONE);
-                    wardNumberBinding.blockLayout.setVisibility(View.GONE);
+                    wardNumberBinding.phoneNo.setText("");
+                    wardNumberBinding.blockSpinner.setAdapter(null);
+                    wardNumberBinding.selectBlockTv.setVisibility(View.VISIBLE);
+                    wardNumberBinding.blockLayout.setVisibility(View.VISIBLE);
+                    wardNumberBinding.wardTv.setVisibility(View.GONE);
+                    wardNumberBinding.pollingStationName.setVisibility(View.GONE);
                 } else {
                     wardNumberBinding.selectBlockTv.setVisibility(View.GONE);
                     wardNumberBinding.blockLayout.setVisibility(View.GONE);
@@ -169,13 +197,38 @@ public class ElectionWardNumberScreen extends AppCompatActivity implements MyDia
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position > 0) {
-
+                    pref_district = District.get(position).getDistrictName();
+                    prefManager.setDistrictName(pref_district);
+//                    Log.d("name", "" + wardNumberBinding.ruralUrbanSpinner.getSelectedItem());
+                    if (isPanchayatUnion) {
+                        wardNumberBinding.blockSpinner.setAdapter(null);
+                        wardNumberBinding.phoneNo.setText("");
+                        blockFilterSpinner(District.get(position).getDistictCode(), "Panchayat Union");
+                        prefManager.setDistrictCode(District.get(position).getDistictCode());
+                        prefManager.setName("Panchayat Union");
+                    } else if (isMunicipality) {
+                        wardNumberBinding.blockSpinner.setAdapter(null);
+                        wardNumberBinding.phoneNo.setText("");
+                        blockFilterSpinner(District.get(position).getDistictCode(), "Municipality");
+                        prefManager.setDistrictCode(District.get(position).getDistictCode());
+                        prefManager.setName("Municipality");
+                    } else if (isTownPanchayat) {
+                        wardNumberBinding.blockSpinner.setAdapter(null);
+                        wardNumberBinding.phoneNo.setText("");
+                        blockFilterSpinner(District.get(position).getDistictCode(), "TownPanchayat");
+                        prefManager.setDistrictCode(District.get(position).getDistictCode());
+                        prefManager.setName("TownPanchayat");
+                    } else if (isCorporation) {
+                        wardNumberBinding.blockSpinner.setAdapter(null);
+                        wardNumberBinding.phoneNo.setText("");
+                        blockFilterSpinner(District.get(position).getDistictCode(), "Corporation");
+                        prefManager.setDistrictCode(District.get(position).getDistictCode());
+                        prefManager.setName("Corporation");
+                    } else {
+                        wardNumberBinding.blockSpinner.setAdapter(null);
+                    }
                 }
-                pref_district = District.get(position).getDistrictName();
-                prefManager.setDistrictName(pref_district);
 
-                blockFilterSpinner(District.get(position).getDistictCode());
-                prefManager.setDistrictCode(District.get(position).getDistictCode());
             }
 
             @Override
@@ -189,26 +242,18 @@ public class ElectionWardNumberScreen extends AppCompatActivity implements MyDia
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position > 0) {
-
-                }
-                pref_Block = Block.get(position).getBlockName();
-                prefManager.setBlockName(pref_Block);
-                prefManager.setKeySpinnerSelectedBlockcode(Block.get(position).getBlockCode());
-
-                villageFilterSpinner(Block.get(position).getBlockCode());
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-
-        });
-
-        wardNumberBinding.villageSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position > 0) {
+                    String Blockquery = "SELECT * FROM " + RO_USER_TABLE_NAME + " WHERE district_code = " + prefManager.getDistrictCode() + " and localbody_type = '" + prefManager.getName() + "' order by localbody_name asc";
+                    Log.d("BlockQuery", "" + Blockquery);
+                    Cursor BlockList = db.rawQuery(Blockquery, null);
+                    if (BlockList.getCount() > 0) {
+                        wardNumberBinding.wardTv.setVisibility(View.VISIBLE);
+                        wardNumberBinding.pollingStationName.setVisibility(View.VISIBLE);
+                        prefManager.setBlockCode(Block.get(position).getLocalBodyNo());
+                        ROMobileNo(prefManager.getDistrictCode(), prefManager.getBlockCode(), prefManager.getName());
+                    } else {
+                        wardNumberBinding.wardTv.setVisibility(View.GONE);
+                        wardNumberBinding.pollingStationName.setVisibility(View.GONE);
+                    }
 
                 }
             }
@@ -219,6 +264,7 @@ public class ElectionWardNumberScreen extends AppCompatActivity implements MyDia
             }
 
         });
+
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -230,9 +276,7 @@ public class ElectionWardNumberScreen extends AppCompatActivity implements MyDia
     }
 
     public void fetchApi() {
-        getDistrictList();
-        getBlockList();
-        getVillageList();
+        getRODetailsList();
     }
 
     public void loadOfflineRuralUrbanListDBValues() {
@@ -248,7 +292,9 @@ public class ElectionWardNumberScreen extends AppCompatActivity implements MyDia
     }
 
     public void loadOfflineDistrictListDBValues() {
-        Cursor DistrictList = db.rawQuery("Select * from " + DISTRICT_TABLE_NAME + " WHERE dcode != 29 order by dname asc", null);
+        String Distquery = "Select distinct district_code, district_name from " + RO_USER_TABLE_NAME + " order by district_name asc";
+        Log.d("DistQuery", "" + Distquery);
+        Cursor DistrictList = db.rawQuery(Distquery, null);
         District.clear();
         ElectionWardNoCall electionWardNoCall = new ElectionWardNoCall();
         electionWardNoCall.setDistrictName("Select District");
@@ -257,8 +303,8 @@ public class ElectionWardNumberScreen extends AppCompatActivity implements MyDia
             if (DistrictList.moveToFirst()) {
                 do {
                     ElectionWardNoCall districtList = new ElectionWardNoCall();
-                    String districtCode = DistrictList.getString(DistrictList.getColumnIndexOrThrow(AppConstant.DISTRICT_CODE));
-                    String districtName = DistrictList.getString(DistrictList.getColumnIndexOrThrow(AppConstant.DISTRICT_NAME));
+                    String districtCode = DistrictList.getString(DistrictList.getColumnIndexOrThrow(AppConstant.RO_DISTRICT_CODE));
+                    String districtName = DistrictList.getString(DistrictList.getColumnIndexOrThrow(AppConstant.RO_DISTRICT_NAME));
                     districtList.setDistictCode(districtCode);
                     districtList.setDistrictName(districtName);
                     District.add(districtList);
@@ -268,69 +314,174 @@ public class ElectionWardNumberScreen extends AppCompatActivity implements MyDia
         wardNumberBinding.districtSpinner.setAdapter(new CommonAdapter(this, District, "DistrictList"));
     }
 
-    public void blockFilterSpinner(String filterBlock) {
+    public void blockFilterSpinner(String filterBlock, String localBodyType) {
+        String DisBlockquery = "SELECT * FROM " + RO_USER_TABLE_NAME + " WHERE district_code = " + filterBlock + " and localbody_type = '" + localBodyType + "' order by localbody_name asc";
+        Log.d("DisBloCodeQuery", "" + DisBlockquery);
+        Cursor BlockList = db.rawQuery(DisBlockquery, null);
 
-        Cursor BlockList = db.rawQuery("SELECT * FROM " + BLOCK_TABLE_NAME + " WHERE dcode = " + filterBlock + " order by bname asc", null);
-        Block.clear();
         ElectionWardNoCall blockListValue = new ElectionWardNoCall();
-        blockListValue.setBlockName("Select Block");
+        if (localBodyType.equalsIgnoreCase("Panchayat Union")) {
+            Block.clear();
+            if (BlockList.getCount() > 0) {
+                wardNumberBinding.selectBlockTv.setVisibility(View.VISIBLE);
+                wardNumberBinding.blockLayout.setVisibility(View.VISIBLE);
+                blockListValue.setLocalBodyName("Select Local Body Name");
+            } else {
+                wardNumberBinding.selectBlockTv.setVisibility(View.GONE);
+                wardNumberBinding.blockLayout.setVisibility(View.GONE);
+                Utils.showAlert(this, "There is no Panchayat Union!");
+            }
+        } else if (localBodyType.equalsIgnoreCase("Municipality")) {
+            Block.clear();
+            if (BlockList.getCount() > 0) {
+                wardNumberBinding.selectBlockTv.setVisibility(View.VISIBLE);
+                wardNumberBinding.blockLayout.setVisibility(View.VISIBLE);
+                blockListValue.setLocalBodyName("Select Municipality");
+            } else {
+                wardNumberBinding.selectBlockTv.setVisibility(View.GONE);
+                wardNumberBinding.blockLayout.setVisibility(View.GONE);
+                Utils.showAlert(this, "There is no Municipality!");
+            }
+        } else if (localBodyType.equalsIgnoreCase("TownPanchayat")) {
+            Block.clear();
+            if (BlockList.getCount() > 0) {
+                wardNumberBinding.selectBlockTv.setVisibility(View.VISIBLE);
+                wardNumberBinding.blockLayout.setVisibility(View.VISIBLE);
+                blockListValue.setLocalBodyName("Select Town Panchayat");
+            } else {
+                wardNumberBinding.selectBlockTv.setVisibility(View.GONE);
+                wardNumberBinding.blockLayout.setVisibility(View.GONE);
+                Utils.showAlert(this, "There is no Town Panchayat!");
+            }
+        } else if (localBodyType.equalsIgnoreCase("Corporation")) {
+            Block.clear();
+            if (BlockList.getCount() > 0) {
+                wardNumberBinding.selectBlockTv.setVisibility(View.VISIBLE);
+                wardNumberBinding.blockLayout.setVisibility(View.VISIBLE);
+                blockListValue.setLocalBodyName("Select Corporation");
+            } else {
+                wardNumberBinding.selectBlockTv.setVisibility(View.GONE);
+                wardNumberBinding.blockLayout.setVisibility(View.GONE);
+                Utils.showAlert(this, "There is no Corporation!");
+            }
+        }
         Block.add(blockListValue);
         if (BlockList.getCount() > 0) {
             if (BlockList.moveToFirst()) {
                 do {
                     ElectionWardNoCall blockList = new ElectionWardNoCall();
-                    String districtCode = BlockList.getString(BlockList.getColumnIndexOrThrow(AppConstant.DISTRICT_CODE));
-                    String blockCode = BlockList.getString(BlockList.getColumnIndexOrThrow(AppConstant.BLOCK_CODE));
-                    String blockName = BlockList.getString(BlockList.getColumnIndexOrThrow(AppConstant.BLOCK_NAME));
+                    String districtCode = BlockList.getString(BlockList.getColumnIndexOrThrow(AppConstant.RO_DISTRICT_CODE));
+                    String blockCode = BlockList.getString(BlockList.getColumnIndexOrThrow(AppConstant.LOCALBODY_NO));
+                    String blockName = BlockList.getString(BlockList.getColumnIndexOrThrow(AppConstant.LOCALBODY_NAME));
                     blockList.setDistictCode(districtCode);
-                    blockList.setBlockCode(blockCode);
-                    blockList.setBlockName(blockName);
+                    blockList.setLocalBodyNo(blockCode);
+                    blockList.setLocalBodyName(blockName);
                     Block.add(blockList);
                 } while (BlockList.moveToNext());
             }
         }
-        wardNumberBinding.blockSpinner.setAdapter(new CommonAdapter(this, Block, "BlockList"));
+        if (localBodyType.equalsIgnoreCase("Panchayat Union")) {
+            wardNumberBinding.blockSpinner.setAdapter(new CommonAdapter(this, Block, "BlockList"));
+        } else if (localBodyType.equalsIgnoreCase("Municipality")) {
+            wardNumberBinding.blockSpinner.setAdapter(new CommonAdapter(this, Block, "MunicipalityList"));
+        } else if (localBodyType.equalsIgnoreCase("TownPanchayat")) {
+            wardNumberBinding.blockSpinner.setAdapter(new CommonAdapter(this, Block, "TownPanchayatList"));
+        } else if (localBodyType.equalsIgnoreCase("Corporation")) {
+            wardNumberBinding.blockSpinner.setAdapter(new CommonAdapter(this, Block, "CorporationList"));
+        }
+
     }
 
-    public void villageFilterSpinner(String filterVillage) {
-        String Query = "SELECT * FROM " + VILLAGE_TABLE_NAME + " WHERE dcode = " + prefManager.getDistrictCode() + " and bcode = " + filterVillage + " order by pvname asc";
-        Log.d("villageQuery", "" + Query);
-        Cursor VillageList = db.rawQuery(Query, null);
-        Village.clear();
-        ElectionWardNoCall villageListValue = new ElectionWardNoCall();
-        villageListValue.setPvName("Select Village");
-        Village.add(villageListValue);
-        if (VillageList.getCount() > 0) {
-            if (VillageList.moveToFirst()) {
+    public void ROMobileNo(String filterBlock, String localBodyNo, String localBodyType) {
+        String RoUserquery = "SELECT * FROM " + RO_USER_TABLE_NAME + " WHERE district_code = " + filterBlock + " and localbody_no = " + localBodyNo + " and localbody_type = '" + localBodyType + "'";
+        Log.d("RoUserquery", "" + RoUserquery);
+        Cursor BlockList = db.rawQuery(RoUserquery, null);
+
+        if (BlockList.getCount() > 0) {
+
+            if (BlockList.moveToFirst()) {
                 do {
-                    ElectionWardNoCall villageList = new ElectionWardNoCall();
-                    String districtCode = VillageList.getString(VillageList.getColumnIndexOrThrow(AppConstant.DISTRICT_CODE));
-                    String blockCode = VillageList.getString(VillageList.getColumnIndexOrThrow(AppConstant.BLOCK_CODE));
-                    String pvCode = VillageList.getString(VillageList.getColumnIndexOrThrow(AppConstant.PV_CODE));
-                    String pvname = VillageList.getString(VillageList.getColumnIndexOrThrow(AppConstant.PV_NAME));
-
-                    villageList.setDistictCode(districtCode);
-                    villageList.setBlockCode(blockCode);
-                    villageList.setPvCode(pvCode);
-                    villageList.setPvName(pvname);
-
-                    Village.add(villageList);
-                    Log.d("spinnersize", "" + Village.size());
-                } while (VillageList.moveToNext());
+                    ElectionWardNoCall blockList = new ElectionWardNoCall();
+                    String districtCode = BlockList.getString(BlockList.getColumnIndexOrThrow(AppConstant.RO_DISTRICT_CODE));
+                    String blockCode = BlockList.getString(BlockList.getColumnIndexOrThrow(AppConstant.LOCALBODY_NO));
+                    String blockName = BlockList.getString(BlockList.getColumnIndexOrThrow(AppConstant.LOCALBODY_NAME));
+                    String mobileNo = BlockList.getString(BlockList.getColumnIndexOrThrow(AppConstant.RO_MOBILE_NO));
+                    if (!mobileNo.equalsIgnoreCase("")) {
+                        wardNumberBinding.phoneNo.setText(mobileNo);
+                    } else {
+                        wardNumberBinding.phoneNo.setText("NA");
+                    }
+                    blockList.setDistictCode(districtCode);
+                    blockList.setLocalBodyNo(blockCode);
+                    blockList.setLocalBodyName(blockName);
+                    blockList.setRoMobileNo(mobileNo);
+                } while (BlockList.moveToNext());
             }
         }
-        wardNumberBinding.villageSpinner.setAdapter(new CommonAdapter(this, Village, "VillageList"));
+
     }
 
     public void call() {
-        if (isPermissionGranted()) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                call_action();
+        validateDetails();
+    }
+
+    public void validateDetails() {
+        if (!"Select Rural/urban".equalsIgnoreCase(RuralUrbanList.get(wardNumberBinding.ruralUrbanSpinner.getSelectedItemPosition()))) {
+            if (!"Select District".equalsIgnoreCase(District.get(wardNumberBinding.districtSpinner.getSelectedItemPosition()).getDistrictName())) {
+                if (isPanchayatUnion) {
+                    if (!"Select Local Body Name".equalsIgnoreCase(Block.get(wardNumberBinding.blockSpinner.getSelectedItemPosition()).getLocalBodyName())) {
+                        if (isPermissionGranted()) {
+                            permissionGrantedMethod();
+                        }
+                    } else {
+                        Utils.showAlert(this, "Select Local Body Name!");
+                    }
+                } else if (isMunicipality) {
+                    if (!"Select Municipality".equalsIgnoreCase(Block.get(wardNumberBinding.blockSpinner.getSelectedItemPosition()).getLocalBodyName())) {
+                        if (isPermissionGranted()) {
+                            permissionGrantedMethod();
+                        }
+                    } else {
+                        Utils.showAlert(this, "Select Municipality!");
+                    }
+                } else if (isTownPanchayat) {
+                    if (!"Select Town Panchayat".equalsIgnoreCase(Block.get(wardNumberBinding.blockSpinner.getSelectedItemPosition()).getLocalBodyName())) {
+                        if (isPermissionGranted()) {
+                            permissionGrantedMethod();
+                        }
+                    } else {
+                        Utils.showAlert(this, "Select TownPanchayat!");
+                    }
+                } else if (isCorporation) {
+                    if (!"Select Corporation".equalsIgnoreCase(Block.get(wardNumberBinding.blockSpinner.getSelectedItemPosition()).getLocalBodyName())) {
+                        if (isPermissionGranted()) {
+                            permissionGrantedMethod();
+                        }
+                    } else {
+                        Utils.showAlert(this, "Select Corporation!");
+                    }
+                }
+            } else {
+                Utils.showAlert(this, "Select District!");
             }
+        } else {
+            Utils.showAlert(this, "Select Rural/urban!");
+        }
+
+    }
+
+    public void permissionGrantedMethod() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            call_action();
+
         }
     }
 
     public boolean isPermissionGranted() {
+        String phoneNO = wardNumberBinding.phoneNo.getText().toString();
+        if (phoneNO.isEmpty()) {
+            return false;
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.CALL_PHONE)
                     == PackageManager.PERMISSION_GRANTED) {
@@ -371,9 +522,6 @@ public class ElectionWardNumberScreen extends AppCompatActivity implements MyDia
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void call_action() {
-        Intent callIntent = new Intent(Intent.ACTION_CALL);
-        String phoneNO = wardNumberBinding.phoneNo.getText().toString();
-        callIntent.setData(Uri.parse("tel:" + phoneNO));
         if (checkSelfPermission(Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    Activity#requestPermissions
@@ -384,32 +532,41 @@ public class ElectionWardNumberScreen extends AppCompatActivity implements MyDia
             // for Activity#requestPermissions for more details.
             return;
         }
-        startActivity(callIntent);
+        Intent callIntent = new Intent(Intent.ACTION_CALL);
+        String phoneNO = wardNumberBinding.phoneNo.getText().toString();
+        if (!phoneNO.equalsIgnoreCase("NA")) {
+            Log.d("MobileNo", "" + phoneNO);
+            if (Utils.isValidMobile(phoneNO)) {
+                Log.d("MobileNo", "" + phoneNO);
+                callIntent.setData(Uri.parse("tel:" + phoneNO));
+                startActivity(callIntent);
+            } else {
+                Utils.showAlert(this, "Enter the Valid Mobile No");
+            }
+        } else {
+            Utils.showAlert(this, "Call Not Available!");
+        }
+
+
     }
 
 
-    public void getDistrictList() {
+    public void getRODetailsList() {
         try {
-            new ApiService(this).makeJSONObjectRequest("DistrictList", Api.Method.POST, UrlGenerator.getOpenUrl(), districtListJsonParams(), "not cache", this);
+            new ApiService(this).makeJSONObjectRequest("RODetailsList", Api.Method.POST, UrlGenerator.getWorkListUrl(), roUserDetailsListJsonParams(), "not cache", this);
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
-    public void getBlockList() {
-        try {
-            new ApiService(this).makeJSONObjectRequest("BlockList", Api.Method.POST, UrlGenerator.getOpenUrl(), blockListJsonParams(), "not cache", this);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
 
-    public void getVillageList() {
-        try {
-            new ApiService(this).makeJSONObjectRequest("VillageList", Api.Method.POST, UrlGenerator.getOpenUrl(), villageListJsonParams(), "not cache", this);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+    public JSONObject roUserDetailsListJsonParams() throws JSONException {
+        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), Utils.roDetailsListJsonParams().toString());
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
+        dataSet.put(AppConstant.DATA_CONTENT, authKey);
+        Log.d("roUserDetailsList", "" + authKey);
+        return dataSet;
     }
 
     @Override
@@ -417,48 +574,23 @@ public class ElectionWardNumberScreen extends AppCompatActivity implements MyDia
         try {
             JSONObject responseObj = serverResponse.getJsonResponse();
             String urlType = serverResponse.getApi();
-            String status = responseObj.getString(AppConstant.KEY_STATUS);
-            String response = responseObj.getString(AppConstant.KEY_RESPONSE);
 
-            if ("DistrictList".equals(urlType) && responseObj != null) {
-                if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("OK")) {
-                    new InsertDistrictTask().execute(responseObj.getJSONArray(AppConstant.JSON_DATA));
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            loadOfflineDistrictListDBValues();
-                        }
-                    }, 2000);
+            if ("RODetailsList".equals(urlType) && responseObj != null) {
+                String key = responseObj.getString(AppConstant.ENCODE_DATA);
+                String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
+                JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
+                if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
+                    new InsertROUserDetailsTask().execute(jsonObject);
+                }
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        loadOfflineRuralUrbanListDBValues();
+                        loadOfflineDistrictListDBValues();
+                    }
+                }, 2000);
 
-                } else if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("NO_RECORD")) {
-                    Log.d("Record", responseObj.getString(AppConstant.KEY_MESSAGE));
-                }
-                Log.d("DistrictList", "" + responseObj.getJSONArray(AppConstant.JSON_DATA));
-            }
-            if ("BlockList".equals(urlType) && responseObj != null) {
-                if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("OK")) {
-                    new InsertBlockTask().execute(responseObj.getJSONArray(AppConstant.JSON_DATA));
-                } else if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("NO_RECORD")) {
-                    Log.d("Record", responseObj.getString(AppConstant.KEY_MESSAGE));
-                }
-                Log.d("BlockList", "" + responseObj.getJSONArray(AppConstant.JSON_DATA));
-            }
-
-            if ("VillageList".equals(urlType) && responseObj != null) {
-                if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("OK")) {
-                    new InsertVillageTask().execute(responseObj.getJSONArray(AppConstant.JSON_DATA));
-                } else if (status.equalsIgnoreCase("OK") && response.equalsIgnoreCase("NO_RECORD")) {
-                    Log.d("Record", responseObj.getString(AppConstant.KEY_MESSAGE));
-                }
-                Log.d("VillageList", "" + responseObj.getJSONArray(AppConstant.JSON_DATA));
-                String authKey = responseObj.getJSONArray(AppConstant.JSON_DATA).toString();
-                int maxLogSize = 20000;
-                for (int i = 0; i <= authKey.length() / maxLogSize; i++) {
-                    int start = i * maxLogSize;
-                    int end = (i + 1) * maxLogSize;
-                    end = end > authKey.length() ? authKey.length() : end;
-                    Log.v("to_send", authKey.substring(start, end));
-                }
+                Log.d("RODetailsList", "" + responseDecryptedBlockKey);
             }
 
 
@@ -472,86 +604,34 @@ public class ElectionWardNumberScreen extends AppCompatActivity implements MyDia
 
     }
 
-    public class InsertDistrictTask extends AsyncTask<JSONArray, Void, Void> {
+
+    public class InsertROUserDetailsTask extends AsyncTask<JSONObject, Void, Void> {
 
         @Override
-        protected Void doInBackground(JSONArray... params) {
+        protected Void doInBackground(JSONObject... params) {
             dbData.open();
-            ArrayList<ElectionWardNoCall> districtlist_count = dbData.getAll_District();
-            if (districtlist_count.size() <= 0) {
-                if (params.length > 0) {
-                    JSONArray jsonArray = new JSONArray();
-                    jsonArray = params[0];
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        ElectionWardNoCall districtListValue = new ElectionWardNoCall();
-                        try {
-                            districtListValue.setDistictCode(jsonArray.getJSONObject(i).getString(AppConstant.DISTRICT_CODE));
-                            districtListValue.setDistrictName(jsonArray.getJSONObject(i).getString(AppConstant.DISTRICT_NAME));
-
-                            dbData.insertDistrict(districtListValue);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                    }
-                }
-
-            }
-            return null;
-        }
-
-    }
-
-    public class InsertBlockTask extends AsyncTask<JSONArray, Void, Void> {
-
-        @Override
-        protected Void doInBackground(JSONArray... params) {
-            dbData.open();
-            ArrayList<ElectionWardNoCall> blocklist_count = dbData.getAll_Block();
-            if (blocklist_count.size() <= 0) {
-                if (params.length > 0) {
-                    JSONArray jsonArray = new JSONArray();
-                    jsonArray = params[0];
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        ElectionWardNoCall blocktListValue = new ElectionWardNoCall();
-                        try {
-                            blocktListValue.setDistictCode(jsonArray.getJSONObject(i).getString(AppConstant.DISTRICT_CODE));
-                            blocktListValue.setBlockCode(jsonArray.getJSONObject(i).getString(AppConstant.BLOCK_CODE));
-                            blocktListValue.setBlockName(jsonArray.getJSONObject(i).getString(AppConstant.BLOCK_NAME));
-
-                            dbData.insertBlock(blocktListValue);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                    }
-                }
-
-            }
-            return null;
-        }
-
-    }
-
-    public class InsertVillageTask extends AsyncTask<JSONArray, Void, Void> {
-
-        @Override
-        protected Void doInBackground(JSONArray... params) {
-            dbData.open();
-            ArrayList<ElectionWardNoCall> villagelist_count = dbData.getAll_Village();
+            ArrayList<ElectionWardNoCall> villagelist_count = dbData.getAll_ROUSerDetails();
             if (villagelist_count.size() <= 0) {
                 if (params.length > 0) {
                     JSONArray jsonArray = new JSONArray();
-                    jsonArray = params[0];
+                    try {
+                        jsonArray = params[0].getJSONArray(AppConstant.JSON_DATA);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                     for (int i = 0; i < jsonArray.length(); i++) {
-                        ElectionWardNoCall villageListValue = new ElectionWardNoCall();
+                        ElectionWardNoCall roUserDetails = new ElectionWardNoCall();
                         try {
-                            villageListValue.setDistictCode(jsonArray.getJSONObject(i).getString(AppConstant.DISTRICT_CODE));
-                            villageListValue.setBlockCode(jsonArray.getJSONObject(i).getString(AppConstant.BLOCK_CODE));
-                            villageListValue.setPvCode(jsonArray.getJSONObject(i).getString(AppConstant.PV_CODE));
-                            villageListValue.setPvName(jsonArray.getJSONObject(i).getString(AppConstant.PV_NAME));
+                            roUserDetails.setDistictCode(jsonArray.getJSONObject(i).getString(AppConstant.RO_DISTRICT_CODE));
+                            roUserDetails.setDistrictName(jsonArray.getJSONObject(i).getString(AppConstant.RO_DISTRICT_NAME));
+                            roUserDetails.setLocalBodyNo(jsonArray.getJSONObject(i).getString(AppConstant.LOCALBODY_NO));
+                            roUserDetails.setLocalBodyName(jsonArray.getJSONObject(i).getString(AppConstant.LOCALBODY_NAME));
+                            roUserDetails.setRoUserName(jsonArray.getJSONObject(i).getString(AppConstant.RO_USER_NAME));
+                            roUserDetails.setRoMobileNo(jsonArray.getJSONObject(i).getString(AppConstant.RO_MOBILE_NO));
+                            roUserDetails.setLocalBodyType(jsonArray.getJSONObject(i).getString(AppConstant.LOCALBODY_TYPE));
+                            roUserDetails.setLocalBodyAbbr(jsonArray.getJSONObject(i).getString(AppConstant.LOCALBODY_ABBR));
 
-                            dbData.insertVillage(villageListValue);
+                            dbData.insertROUserDetails(roUserDetails);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -567,8 +647,43 @@ public class ElectionWardNumberScreen extends AppCompatActivity implements MyDia
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             clearAnimations();
+            if (progressHUD != null) {
+                progressHUD.cancel();
+            }
         }
 
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressHUD = ProgressHUD.show(ElectionWardNumberScreen.this, "Downloading", true, false, null);
+        }
+    }
+
+
+    @Override
+    public void onButtonClick(AlertDialog alertDialog, String type) {
+        alertDialog.dismiss();
+        if ("Exit".equalsIgnoreCase(type)) {
+            onBackPressed();
+        } else {
+
+            Intent intent = new Intent(this, LoginScreen.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            intent.putExtra("EXIT", false);
+            startActivity(intent);
+            finish();
+            overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
+        }
+    }
+
+    public void refreshScreenCallApi() {
+        if (Utils.isOnline()) {
+            deleteRefreshTable();
+            setAnimationView();
+            fetchApi();
+        } else {
+            Utils.showAlert(this, getResources().getString(R.string.no_internet));
+        }
     }
 
     @Override
@@ -584,6 +699,10 @@ public class ElectionWardNumberScreen extends AppCompatActivity implements MyDia
     }
 
 
+    public void closeApplication() {
+        new MyDialog(this).exitDialog(this, "Are you sure you want to Logout?", "Logout");
+    }
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -595,32 +714,10 @@ public class ElectionWardNumberScreen extends AppCompatActivity implements MyDia
         return super.onKeyDown(keyCode, event);
     }
 
-    @Override
-    public void onButtonClick(AlertDialog alertDialog, String type) {
-        alertDialog.dismiss();
-        if ("Exit".equalsIgnoreCase(type)) {
-            if (Utils.isOnline()) {
-                deleteRefreshTable();
-            }
-            onBackPressed();
-        }
-    }
-
-    public void refreshScreenCallApi() {
-        if (Utils.isOnline()) {
-            setAnimationView();
-            deleteRefreshTable();
-            fetchApi();
-        } else {
-            Utils.showAlert(this, getResources().getString(R.string.no_internet));
-        }
-    }
 
     public void deleteRefreshTable() {
         dbData.open();
         dbData.deleteAllTables();
-        prefManager.clearSession();
-        Utils.clearApplicationData(this);
     }
 
     public void setAnimationView() {

@@ -29,9 +29,20 @@ public class AppConstant {
     public static String DISTRICT_CODE = "dcode";
     public static String DISTRICT_NAME = "dname";
 
+    public static String RO_DISTRICT_CODE = "district_code";
+    public static String RO_DISTRICT_NAME = "district_name";
+
     public static String BLOCK_CODE = "bcode";
     public static String PV_CODE = "pvcode";
     public static String BLOCK_NAME = "bname";
     public static String PV_NAME = "pvname";
+    public static String DESIG_NAME = "desig_name";
+    public static String RO_USER_DETAILS = "ro_user_details";
+    public static String LOCALBODY_NO = "localbody_no";
+    public static String LOCALBODY_NAME = "localbody_name";
+    public static String RO_USER_NAME = "ro_user_name";
+    public static String RO_MOBILE_NO = "ro_mobile_no";
+    public static String LOCALBODY_TYPE = "localbody_type";
+    public static String LOCALBODY_ABBR = "localbody_abbr";
 
 }

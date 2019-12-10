@@ -30,9 +30,9 @@
                     android:id="@+id/select_rural_urban_tv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/margin_left_20dp"
+                    android:layout_marginLeft="@dimen/_20sdp"
                     android:layout_marginTop="@dimen/padding"
-                    android:layout_marginRight="@dimen/margin_left_20dp"
+                    android:layout_marginRight="@dimen/_20sdp"
                     android:text="Rural/Urban"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_15sdp"
@@ -50,10 +50,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/header"
                         android:layout_centerHorizontal="true"
-                        android:layout_marginLeft="@dimen/margin_left_20dp"
+                        android:layout_marginLeft="@dimen/_20sdp"
                         android:layout_marginTop="@dimen/padding"
-                        android:layout_marginRight="@dimen/margin_left_20dp"
-                        android:layout_marginBottom="@dimen/margin_left_20dp"
+                        android:layout_marginRight="@dimen/_20sdp"
+                        android:layout_marginBottom="@dimen/_20sdp"
                         android:layout_centerInParent="true"
                         android:foreground="?android:attr/selectableItemBackground"
                         card_view:cardCornerRadius="5dp"
@@ -72,14 +72,13 @@
                     </androidx.cardview.widget.CardView>
 
                 </RelativeLayout>
-
                 <TextView
                     android:id="@+id/select_district_tv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/rural_urban_layout"
-                    android:layout_marginLeft="@dimen/margin_left_20dp"
-                    android:layout_marginRight="@dimen/margin_left_20dp"
+                    android:layout_marginLeft="@dimen/_20sdp"
+                    android:layout_marginRight="@dimen/_20sdp"
                     android:text="District Name"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_15sdp"
@@ -97,10 +96,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/header"
                         android:layout_centerHorizontal="true"
-                        android:layout_marginLeft="@dimen/margin_left_20dp"
+                        android:layout_marginLeft="@dimen/_20sdp"
                         android:layout_marginTop="@dimen/padding"
-                        android:layout_marginRight="@dimen/margin_left_20dp"
-                        android:layout_marginBottom="@dimen/margin_left_20dp"
+                        android:layout_marginRight="@dimen/_20sdp"
+                        android:layout_marginBottom="@dimen/_20sdp"
                         android:layout_centerInParent="true"
                         android:foreground="?android:attr/selectableItemBackground"
                         card_view:cardCornerRadius="5dp"
@@ -127,8 +126,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/district_layout"
-                    android:layout_marginLeft="@dimen/margin_left_20dp"
-                    android:layout_marginRight="@dimen/margin_left_20dp"
+                    android:layout_marginLeft="@dimen/_20sdp"
+                    android:layout_marginRight="@dimen/_20sdp"
                     android:text="Block Name"
 
                     android:textColor="@color/black"
@@ -146,10 +145,10 @@
                     <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/header"
-                        android:layout_marginLeft="@dimen/margin_left_20dp"
+                        android:layout_marginLeft="@dimen/_20sdp"
                         android:layout_marginTop="@dimen/padding"
-                        android:layout_marginRight="@dimen/margin_left_20dp"
-                        android:layout_marginBottom="@dimen/margin_left_20dp"
+                        android:layout_marginRight="@dimen/_20sdp"
+                        android:layout_marginBottom="@dimen/_20sdp"
                         android:layout_centerInParent="true"
                         android:foreground="?android:attr/selectableItemBackground"
                         card_view:cardCornerRadius="5dp"
@@ -175,12 +174,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/block_layout"
-                    android:layout_marginLeft="@dimen/margin_left_20dp"
-                    android:layout_marginRight="@dimen/margin_left_20dp"
+                    android:layout_marginLeft="@dimen/_20sdp"
+                    android:layout_marginRight="@dimen/_20sdp"
                     android:text="Village Name"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_15sdp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:visibility="gone"/>
 
                 <RelativeLayout
                     android:id="@+id/village_layout"
@@ -189,16 +189,16 @@
                    android:layout_below="@+id/select_village_tv"
 
                     android:orientation="vertical"
-                    android:visibility="visible">
+                    android:visibility="gone">
 
                     <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/header"
                         android:layout_centerInParent="true"
-                        android:layout_marginLeft="@dimen/margin_left_20dp"
+                        android:layout_marginLeft="@dimen/_20sdp"
                         android:layout_marginTop="@dimen/padding"
-                        android:layout_marginRight="@dimen/margin_left_20dp"
-                        android:layout_marginBottom="@dimen/margin_left_20dp"
+                        android:layout_marginRight="@dimen/_20sdp"
+                        android:layout_marginBottom="@dimen/_20sdp"
                         android:foreground="?android:attr/selectableItemBackground"
                         card_view:cardCornerRadius="5dp"
                         card_view:cardElevation="3dp">
@@ -243,33 +243,36 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/village_layout"
-                    android:layout_marginLeft="@dimen/margin_left_20dp"
-                    android:layout_marginRight="@dimen/margin_left_20dp"
-                    android:text="Polling Station Name"
+                    android:layout_marginLeft="@dimen/_20sdp"
+                    android:layout_marginRight="@dimen/_20sdp"
+                    android:text="RO Number"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/_15sdp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:visibility="gone"/>
 
                 <RelativeLayout
+                    android:id="@+id/polling_station_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_3sdp"
                     android:layout_below="@+id/ward_tv"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:visibility="gone">
 
                     <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
                         android:id="@+id/card"
                         android:layout_width="match_parent"
                         android:layout_gravity="center"
                         android:layout_height="@dimen/header"
-                        android:layout_marginLeft="@dimen/margin_left_20dp"
+                        android:layout_marginLeft="@dimen/_20sdp"
                         android:layout_marginTop="@dimen/padding"
-                        android:layout_marginRight="@dimen/margin_left_20dp"
-                        android:layout_marginBottom="@dimen/margin_left_20dp"
-                        android:onClick="@{()-> activity.call()}"
+                        android:layout_marginRight="@dimen/_20sdp"
+                        android:layout_marginBottom="@dimen/_20sdp"
                         android:foreground="?android:attr/selectableItemBackground"
                         card_view:cardCornerRadius="5dp"
-                        card_view:cardElevation="3dp">
+                        card_view:cardElevation="3dp"
+                        >
 
 
                         <RelativeLayout
@@ -282,21 +285,23 @@
                                 android:id="@+id/village_first_letter"
                                 android:layout_width="@dimen/_25sdp"
                                 android:layout_height="@dimen/_25sdp"
+                                android:visibility="gone"
                                 android:layout_alignParentEnd="true"
                                 android:layout_centerInParent="true"
                                 android:src="@drawable/ic_call_black_24dp"/>
 
 
-                            <TextView
+                            <EditText
                                 android:id="@+id/phone_no"
-
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_centerInParent="true"
+                                android:background="@android:color/transparent"
+                                android:inputType="number"
                                 android:layout_marginLeft="@dimen/_12sdp"
-                                android:autoLink="phone"
                                 android:padding="8dp"
-                                android:text="9043566237"
+                                android:text=""
+                                android:cursorVisible="false"
                                 android:textAlignment="gravity"
                                 android:textColor="#000080"
                                 android:textSize="18sp" />
@@ -304,9 +309,22 @@
 
                         </RelativeLayout>
 
+
+
                     </androidx.cardview.widget.CardView>
 
                 </RelativeLayout>
+                <ImageView
+                    android:id="@+id/call"
+                    android:layout_width="@dimen/_50sdp"
+                    android:layout_height="@dimen/_50sdp"
+                    android:layout_marginTop="@dimen/_50sdp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@+id/polling_station_name"
+                    android:padding="@dimen/_10sdp"
+                    android:onClick="@{()-> activity.call()}"
+                    android:background="@drawable/circlegreen"
+                    android:src="@drawable/ic_call_black_24dp"/>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/work_list"
@@ -361,10 +379,24 @@
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:layout_centerInParent="true"
-                        android:text="Ward Numbers"
+                        android:text="TNSEC RO Contacts"
                         android:textStyle="bold"
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/_15sdp" />
+
+                    <ImageView
+                        android:id="@+id/log_out"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_centerInParent="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginRight="15dp"
+                        android:adjustViewBounds="true"
+                        android:onClick="@{()-> activity.closeApplication()}"
+                        android:scaleType="centerInside"
+                        android:background="@drawable/ic_exit_to_app_black_24dp"
+                        android:backgroundTint="@color/black"/>
 
                 </RelativeLayout>
 

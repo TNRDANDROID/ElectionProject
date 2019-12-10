@@ -44,17 +44,8 @@ public class PrefManager {
     private static final String KEY_VILLAGE_LIST_PV_NAME = "Village_List_Pv_Name";
     private static final String KEY_SPINNER_SELECTED_BLOCKCODE = "spinner_selected_block_code";
     private static final String KEY_SPINNER_SELECTED_PVCODE = "spinner_selected_pv_code";
-    private static final String KEY_AUTOCOMPLETE_SELECTED_BANK_NAME = "autocomplete_selected_bank_name";
-    private static final String KEY_AUTOCOMPLETE_SELECTED_BANK_ID = "autocomplete_selected_bank_id";
-    private static final String KEY_SPINNER_SELECTED_CATEGORY_ID= "spinner_selected_category_id";
-    private static final String KEY_SPINNER_SELECTED_CATEGORY_OTHERS_ID= "spinner_selected_category_others_id";
-    private static final String KEY_BLOCK_CODE_JSON = "block_code_json";
-    private static final String KEY_VILLAGE_CODE_JSON = "village_code_json";
-    private static final String KEY_AUTOCOMPLETE_SELECTED_BRANCH_ID = "autocomplete_selected_branch_id";
-    private static final String KEY_AUTOCOMPLETE_SELECTED_IFSC_CODE = "autocomplete_selected_ifsc_code";
-    private static final String KEY_SPINNER_SELECTED_CATEGORY_NAME = "spinner_selected_category_name";
-    private static final String KEY_ACTIVITY_NAME= "activity_name";
-    private static final String KEY_DELETE_JSON = "deleteJson";
+    private static final String KEY_DESIGNATION = "Designation";
+    private static final String KEY_NAME = "Name";
 
 
     private static final String IMEI = "imei";
@@ -76,10 +67,67 @@ public class PrefManager {
         editor.commit();
     }
 
+    public String getUserPassKey() {
+        return pref.getString(KEY_USER_PASS_KEY, null);
+    }
+
+
+    public void setUserName(String userName) {
+        editor.putString(KEY_USER_NAME, userName);
+        editor.commit();
+    }
+
+    public String getUserName() { return pref.getString(KEY_USER_NAME, null); }
+
+    public void setUserPassword(String userPassword) {
+        editor.putString(KEY_USER_PASSWORD, userPassword);
+        editor.commit();
+    }
+
+    public String getUserPassword() { return pref.getString(KEY_USER_PASSWORD, null); }
+
+
+    public void setEncryptPass(String pass) {
+        editor.putString(KEY_ENCRYPT_PASS, pass);
+        editor.commit();
+    }
+
+    public String getEncryptPass() {
+        return pref.getString(KEY_ENCRYPT_PASS, null);
+    }
 
 
 
 
+    public Object setDesignation(Object key) {
+        editor.putString(KEY_DESIGNATION, String.valueOf(key));
+        editor.commit();
+        return key;
+    }
+
+    public String getDesignation() {
+        return pref.getString(KEY_DESIGNATION, null);
+    }
+
+
+
+    public void setName(String userName) {
+        editor.putString(KEY_NAME, userName);
+        editor.commit();
+    }
+
+    public String getName() {
+        return pref.getString(KEY_NAME, null);
+    }
+
+    public String getUserAuthKey() {
+        return pref.getString(KEY_USER_AUTH_KEY, null);
+    }
+
+    public void setUserPassKey(String userPassKey) {
+        editor.putString(KEY_USER_PASS_KEY, userPassKey);
+        editor.commit();
+    }
 
 
     public Object setDistrictCode(Object key) {
