@@ -125,8 +125,6 @@ public class ElectionWardNumberScreen extends AppCompatActivity implements MyDia
                     isCorporation = false;
                     loadOfflineDistrictListDBValues();
                     wardNumberBinding.phoneNo.setText("");
-                    wardNumberBinding.selectBlockTv.setVisibility(View.GONE);
-                    wardNumberBinding.blockLayout.setVisibility(View.GONE);
                     wardNumberBinding.wardTv.setVisibility(View.GONE);
                     wardNumberBinding.pollingStationName.setVisibility(View.GONE);
                 } else if (position == 1) {
@@ -137,8 +135,6 @@ public class ElectionWardNumberScreen extends AppCompatActivity implements MyDia
                     wardNumberBinding.selectBlockTv.setText("Local Body Name");
                     loadOfflineDistrictListDBValues();
                     wardNumberBinding.phoneNo.setText("");
-                    wardNumberBinding.selectBlockTv.setVisibility(View.VISIBLE);
-                    wardNumberBinding.blockLayout.setVisibility(View.VISIBLE);
                     wardNumberBinding.wardTv.setVisibility(View.GONE);
                     wardNumberBinding.pollingStationName.setVisibility(View.GONE);
                 } else if (position == 2) {
@@ -150,8 +146,6 @@ public class ElectionWardNumberScreen extends AppCompatActivity implements MyDia
                     loadOfflineDistrictListDBValues();
                     wardNumberBinding.phoneNo.setText("");
                     wardNumberBinding.blockSpinner.setAdapter(null);
-                    wardNumberBinding.selectBlockTv.setVisibility(View.VISIBLE);
-                    wardNumberBinding.blockLayout.setVisibility(View.VISIBLE);
                     wardNumberBinding.wardTv.setVisibility(View.GONE);
                     wardNumberBinding.pollingStationName.setVisibility(View.GONE);
                 } else if (position == 3) {
@@ -163,8 +157,6 @@ public class ElectionWardNumberScreen extends AppCompatActivity implements MyDia
                     loadOfflineDistrictListDBValues();
                     wardNumberBinding.phoneNo.setText("");
                     wardNumberBinding.blockSpinner.setAdapter(null);
-                    wardNumberBinding.selectBlockTv.setVisibility(View.VISIBLE);
-                    wardNumberBinding.blockLayout.setVisibility(View.VISIBLE);
                     wardNumberBinding.wardTv.setVisibility(View.GONE);
                     wardNumberBinding.pollingStationName.setVisibility(View.GONE);
                 } else if (position == 4) {
@@ -176,13 +168,8 @@ public class ElectionWardNumberScreen extends AppCompatActivity implements MyDia
                     loadOfflineDistrictListDBValues();
                     wardNumberBinding.phoneNo.setText("");
                     wardNumberBinding.blockSpinner.setAdapter(null);
-                    wardNumberBinding.selectBlockTv.setVisibility(View.VISIBLE);
-                    wardNumberBinding.blockLayout.setVisibility(View.VISIBLE);
                     wardNumberBinding.wardTv.setVisibility(View.GONE);
                     wardNumberBinding.pollingStationName.setVisibility(View.GONE);
-                } else {
-                    wardNumberBinding.selectBlockTv.setVisibility(View.GONE);
-                    wardNumberBinding.blockLayout.setVisibility(View.GONE);
                 }
             }
 
@@ -205,28 +192,35 @@ public class ElectionWardNumberScreen extends AppCompatActivity implements MyDia
                         wardNumberBinding.phoneNo.setText("");
                         blockFilterSpinner(District.get(position).getDistictCode(), "Panchayat Union");
                         prefManager.setDistrictCode(District.get(position).getDistictCode());
+                        prefManager.setDistrictName(District.get(position).getDistrictName());
                         prefManager.setName("Panchayat Union");
                     } else if (isMunicipality) {
                         wardNumberBinding.blockSpinner.setAdapter(null);
                         wardNumberBinding.phoneNo.setText("");
                         blockFilterSpinner(District.get(position).getDistictCode(), "Municipality");
                         prefManager.setDistrictCode(District.get(position).getDistictCode());
+                        prefManager.setDistrictName(District.get(position).getDistrictName());
                         prefManager.setName("Municipality");
                     } else if (isTownPanchayat) {
                         wardNumberBinding.blockSpinner.setAdapter(null);
                         wardNumberBinding.phoneNo.setText("");
                         blockFilterSpinner(District.get(position).getDistictCode(), "TownPanchayat");
                         prefManager.setDistrictCode(District.get(position).getDistictCode());
+                        prefManager.setDistrictName(District.get(position).getDistrictName());
                         prefManager.setName("TownPanchayat");
                     } else if (isCorporation) {
                         wardNumberBinding.blockSpinner.setAdapter(null);
                         wardNumberBinding.phoneNo.setText("");
                         blockFilterSpinner(District.get(position).getDistictCode(), "Corporation");
                         prefManager.setDistrictCode(District.get(position).getDistictCode());
+                        prefManager.setDistrictName(District.get(position).getDistrictName());
                         prefManager.setName("Corporation");
                     } else {
                         wardNumberBinding.blockSpinner.setAdapter(null);
                     }
+                } else {
+                    wardNumberBinding.selectBlockTv.setVisibility(View.GONE);
+                    wardNumberBinding.blockLayout.setVisibility(View.GONE);
                 }
 
             }
@@ -255,6 +249,9 @@ public class ElectionWardNumberScreen extends AppCompatActivity implements MyDia
                         wardNumberBinding.pollingStationName.setVisibility(View.GONE);
                     }
 
+                } else {
+                    wardNumberBinding.wardTv.setVisibility(View.GONE);
+                    wardNumberBinding.pollingStationName.setVisibility(View.GONE);
                 }
             }
 
@@ -329,7 +326,7 @@ public class ElectionWardNumberScreen extends AppCompatActivity implements MyDia
             } else {
                 wardNumberBinding.selectBlockTv.setVisibility(View.GONE);
                 wardNumberBinding.blockLayout.setVisibility(View.GONE);
-                Utils.showAlert(this, "There is no Panchayat Union!");
+                Utils.showAlert(this, "There is no Panchayat Union in ".concat(prefManager.getDistrictName()) + " !");
             }
         } else if (localBodyType.equalsIgnoreCase("Municipality")) {
             Block.clear();
@@ -340,7 +337,7 @@ public class ElectionWardNumberScreen extends AppCompatActivity implements MyDia
             } else {
                 wardNumberBinding.selectBlockTv.setVisibility(View.GONE);
                 wardNumberBinding.blockLayout.setVisibility(View.GONE);
-                Utils.showAlert(this, "There is no Municipality!");
+                Utils.showAlert(this, "There is no Municipality in ".concat(prefManager.getDistrictName()) + " !");
             }
         } else if (localBodyType.equalsIgnoreCase("TownPanchayat")) {
             Block.clear();
@@ -351,7 +348,7 @@ public class ElectionWardNumberScreen extends AppCompatActivity implements MyDia
             } else {
                 wardNumberBinding.selectBlockTv.setVisibility(View.GONE);
                 wardNumberBinding.blockLayout.setVisibility(View.GONE);
-                Utils.showAlert(this, "There is no Town Panchayat!");
+                Utils.showAlert(this, "There is no Town Panchayat in ".concat(prefManager.getDistrictName()) + " !");
             }
         } else if (localBodyType.equalsIgnoreCase("Corporation")) {
             Block.clear();
@@ -362,7 +359,7 @@ public class ElectionWardNumberScreen extends AppCompatActivity implements MyDia
             } else {
                 wardNumberBinding.selectBlockTv.setVisibility(View.GONE);
                 wardNumberBinding.blockLayout.setVisibility(View.GONE);
-                Utils.showAlert(this, "There is no Corporation!");
+                Utils.showAlert(this, "There is no Corporation in ".concat(prefManager.getDistrictName()) + " !");
             }
         }
         Block.add(blockListValue);
