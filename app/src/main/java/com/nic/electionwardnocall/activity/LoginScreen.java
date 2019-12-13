@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputType;
@@ -35,6 +36,7 @@ import com.nic.electionwardnocall.databinding.LoginScreenBinding;
 import com.nic.electionwardnocall.support.ProgressHUD;
 import com.nic.electionwardnocall.utils.UrlGenerator;
 import com.nic.electionwardnocall.utils.Utils;
+import com.nic.electionwardnocall.windowpreferences.WindowPreferencesManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -70,6 +72,8 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         loginScreenBinding = DataBindingUtil.setContentView(this, R.layout.login_screen);
         loginScreenBinding.setActivity(this);
+        WindowPreferencesManager windowPreferencesManager = new WindowPreferencesManager(this);
+        windowPreferencesManager.applyEdgeToEdgePreference(getWindow());
         intializeUI();
 
 

@@ -49,6 +49,7 @@ public class dbData {
         values.put(AppConstant.RO_DISTRICT_NAME, odfMonitoringListValue.getDistrictName());
         values.put(AppConstant.LOCALBODY_NO, odfMonitoringListValue.getLocalBodyNo());
         values.put(AppConstant.LOCALBODY_NAME, odfMonitoringListValue.getLocalBodyName());
+        values.put(AppConstant.RO_USER_NAME, odfMonitoringListValue.getRoUserName());
         values.put(AppConstant.RO_MOBILE_NO, odfMonitoringListValue.getRoMobileNo());
         values.put(AppConstant.LOCALBODY_TYPE, odfMonitoringListValue.getLocalBodyType());
         values.put(AppConstant.LOCALBODY_ABBR, odfMonitoringListValue.getLocalBodyAbbr());

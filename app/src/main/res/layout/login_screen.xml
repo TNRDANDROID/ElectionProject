@@ -18,10 +18,9 @@
             android:id="@+id/ivIlls"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_alignParentTop="true"
-            android:layout_centerInParent="true"
+            android:layout_centerHorizontal="true"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="@dimen/_40sdp"
             android:layout_marginEnd="8dp"
             android:src="@mipmap/app_logo" />
 
@@ -144,6 +143,7 @@
             android:text="Login"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
             android:textAllCaps="false"
+            android:textAlignment="center"
             android:textColor="@android:color/white"
             />
         <TextView

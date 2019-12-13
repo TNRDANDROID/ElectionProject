@@ -2,9 +2,11 @@ package com.nic.electionwardnocall.activity;
 
 import android.content.Intent;
 import android.media.audiofx.Visualizer;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -19,6 +21,7 @@ import com.nic.electionwardnocall.Session.PrefManager;
 import com.nic.electionwardnocall.databinding.SplashScreenBinding;
 import com.nic.electionwardnocall.helper.AppVersionHelper;
 import com.nic.electionwardnocall.utils.Utils;
+import com.nic.electionwardnocall.windowpreferences.WindowPreferencesManager;
 
 
 public class SplashScreen extends AppCompatActivity implements
@@ -37,6 +40,9 @@ public class SplashScreen extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         splashScreenBinding = DataBindingUtil.setContentView(this, R.layout.splash_screen);
         splashScreenBinding.setActivity(this);
+        WindowPreferencesManager windowPreferencesManager = new WindowPreferencesManager(this);
+        windowPreferencesManager.applyEdgeToEdgePreference(getWindow());
+
         prefManager = new PrefManager(this);
         if (BuildConfig.BUILD_TYPE.equalsIgnoreCase("production")) {
             if (Utils.isOnline()) {

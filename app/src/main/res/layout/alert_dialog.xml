@@ -20,13 +20,13 @@
             android:gravity="center"
             android:padding="@dimen/padding"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+            android:textColor="#000080"
             style="@style/font_circular_book" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_margin="5dp"
-            android:visibility="gone"
             android:background="#CCC" />
 
         <LinearLayout

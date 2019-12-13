@@ -20,6 +20,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
@@ -43,6 +44,7 @@ import com.nic.electionwardnocall.pojo.ElectionWardNoCall;
 import com.nic.electionwardnocall.support.ProgressHUD;
 import com.nic.electionwardnocall.utils.UrlGenerator;
 import com.nic.electionwardnocall.utils.Utils;
+import com.nic.electionwardnocall.windowpreferences.WindowPreferencesManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -75,6 +77,8 @@ public class ElectionWardNumberScreen extends AppCompatActivity implements MyDia
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         wardNumberBinding = DataBindingUtil.setContentView(this, R.layout.ward_number);
         wardNumberBinding.setActivity(this);
+        WindowPreferencesManager windowPreferencesManager = new WindowPreferencesManager(this);
+        windowPreferencesManager.applyEdgeToEdgePreference(getWindow());
 
         try {
             dbHelper = new DBHelper(this);
@@ -92,7 +96,7 @@ public class ElectionWardNumberScreen extends AppCompatActivity implements MyDia
 
         wardNumberBinding.selectVillageTv.setTranslationX(800);
         wardNumberBinding.villageLayout.setTranslationX(800);
-        wardNumberBinding.call.setTranslationY(400);
+        wardNumberBinding.call.setTranslationY(800);
 
         wardNumberBinding.selectRuralUrbanTv.setAlpha(0);
         wardNumberBinding.ruralUrbanLayout.setAlpha(0);
@@ -107,7 +111,7 @@ public class ElectionWardNumberScreen extends AppCompatActivity implements MyDia
         wardNumberBinding.districtLayout.animate().translationX(0).alpha(1).setDuration(1400).setStartDelay(1000).start();
         wardNumberBinding.selectVillageTv.animate().translationX(0).alpha(1).setDuration(1500).setStartDelay(1200).start();
         wardNumberBinding.villageLayout.animate().translationX(0).alpha(1).setDuration(1600).setStartDelay(1400).start();
-        wardNumberBinding.call.animate().translationY(0).alpha(1).setDuration(1800).setStartDelay(1600).start();
+        wardNumberBinding.call.animate().translationY(0).alpha(1).setDuration(1800).setStartDelay(1700).start();
         loadOfflineRuralUrbanListDBValues();
         if (Utils.isOnline()) {
             fetchApi();
@@ -124,6 +128,9 @@ public class ElectionWardNumberScreen extends AppCompatActivity implements MyDia
                     isTownPanchayat = false;
                     isCorporation = false;
                     loadOfflineDistrictListDBValues();
+                    wardNumberBinding.roUserName.setText("");
+                    wardNumberBinding.ronameTv.setVisibility(View.GONE);
+                    wardNumberBinding.RONameLayout.setVisibility(View.GONE);
                     wardNumberBinding.phoneNo.setText("");
                     wardNumberBinding.wardTv.setVisibility(View.GONE);
                     wardNumberBinding.pollingStationName.setVisibility(View.GONE);
@@ -134,6 +141,10 @@ public class ElectionWardNumberScreen extends AppCompatActivity implements MyDia
                     isCorporation = false;
                     wardNumberBinding.selectBlockTv.setText("Local Body Name");
                     loadOfflineDistrictListDBValues();
+                    wardNumberBinding.blockSpinner.setAdapter(null);
+                    wardNumberBinding.roUserName.setText("");
+                    wardNumberBinding.ronameTv.setVisibility(View.GONE);
+                    wardNumberBinding.RONameLayout.setVisibility(View.GONE);
                     wardNumberBinding.phoneNo.setText("");
                     wardNumberBinding.wardTv.setVisibility(View.GONE);
                     wardNumberBinding.pollingStationName.setVisibility(View.GONE);
@@ -144,8 +155,12 @@ public class ElectionWardNumberScreen extends AppCompatActivity implements MyDia
                     isCorporation = false;
                     wardNumberBinding.selectBlockTv.setText("Municipality");
                     loadOfflineDistrictListDBValues();
-                    wardNumberBinding.phoneNo.setText("");
+
                     wardNumberBinding.blockSpinner.setAdapter(null);
+                    wardNumberBinding.roUserName.setText("");
+                    wardNumberBinding.ronameTv.setVisibility(View.GONE);
+                    wardNumberBinding.RONameLayout.setVisibility(View.GONE);
+                    wardNumberBinding.phoneNo.setText("");
                     wardNumberBinding.wardTv.setVisibility(View.GONE);
                     wardNumberBinding.pollingStationName.setVisibility(View.GONE);
                 } else if (position == 3) {
@@ -155,8 +170,13 @@ public class ElectionWardNumberScreen extends AppCompatActivity implements MyDia
                     isCorporation = false;
                     wardNumberBinding.selectBlockTv.setText("Town Panchayat");
                     loadOfflineDistrictListDBValues();
-                    wardNumberBinding.phoneNo.setText("");
+
                     wardNumberBinding.blockSpinner.setAdapter(null);
+
+                    wardNumberBinding.roUserName.setText("");
+                    wardNumberBinding.ronameTv.setVisibility(View.GONE);
+                    wardNumberBinding.RONameLayout.setVisibility(View.GONE);
+                    wardNumberBinding.phoneNo.setText("");
                     wardNumberBinding.wardTv.setVisibility(View.GONE);
                     wardNumberBinding.pollingStationName.setVisibility(View.GONE);
                 } else if (position == 4) {
@@ -166,8 +186,11 @@ public class ElectionWardNumberScreen extends AppCompatActivity implements MyDia
                     isCorporation = true;
                     wardNumberBinding.selectBlockTv.setText("Corporation");
                     loadOfflineDistrictListDBValues();
-                    wardNumberBinding.phoneNo.setText("");
                     wardNumberBinding.blockSpinner.setAdapter(null);
+                    wardNumberBinding.roUserName.setText("");
+                    wardNumberBinding.ronameTv.setVisibility(View.GONE);
+                    wardNumberBinding.RONameLayout.setVisibility(View.GONE);
+                    wardNumberBinding.phoneNo.setText("");
                     wardNumberBinding.wardTv.setVisibility(View.GONE);
                     wardNumberBinding.pollingStationName.setVisibility(View.GONE);
                 }
@@ -240,16 +263,22 @@ public class ElectionWardNumberScreen extends AppCompatActivity implements MyDia
                     Log.d("BlockQuery", "" + Blockquery);
                     Cursor BlockList = db.rawQuery(Blockquery, null);
                     if (BlockList.getCount() > 0) {
+                        wardNumberBinding.ronameTv.setVisibility(View.VISIBLE);
+                        wardNumberBinding.RONameLayout.setVisibility(View.VISIBLE);
                         wardNumberBinding.wardTv.setVisibility(View.VISIBLE);
                         wardNumberBinding.pollingStationName.setVisibility(View.VISIBLE);
                         prefManager.setBlockCode(Block.get(position).getLocalBodyNo());
                         ROMobileNo(prefManager.getDistrictCode(), prefManager.getBlockCode(), prefManager.getName());
                     } else {
+                        wardNumberBinding.ronameTv.setVisibility(View.GONE);
+                        wardNumberBinding.RONameLayout.setVisibility(View.GONE);
                         wardNumberBinding.wardTv.setVisibility(View.GONE);
                         wardNumberBinding.pollingStationName.setVisibility(View.GONE);
                     }
 
                 } else {
+                    wardNumberBinding.ronameTv.setVisibility(View.GONE);
+                    wardNumberBinding.RONameLayout.setVisibility(View.GONE);
                     wardNumberBinding.wardTv.setVisibility(View.GONE);
                     wardNumberBinding.pollingStationName.setVisibility(View.GONE);
                 }
@@ -402,7 +431,14 @@ public class ElectionWardNumberScreen extends AppCompatActivity implements MyDia
                     String districtCode = BlockList.getString(BlockList.getColumnIndexOrThrow(AppConstant.RO_DISTRICT_CODE));
                     String blockCode = BlockList.getString(BlockList.getColumnIndexOrThrow(AppConstant.LOCALBODY_NO));
                     String blockName = BlockList.getString(BlockList.getColumnIndexOrThrow(AppConstant.LOCALBODY_NAME));
+                    String userName = BlockList.getString(BlockList.getColumnIndexOrThrow(AppConstant.RO_USER_NAME));
                     String mobileNo = BlockList.getString(BlockList.getColumnIndexOrThrow(AppConstant.RO_MOBILE_NO));
+                    if (userName != null) {
+                        wardNumberBinding.roUserName.setText(userName);
+                    } else {
+                        Log.d("roname", "" + userName);
+                        wardNumberBinding.roUserName.setText("NA");
+                    }
                     if (!mobileNo.equalsIgnoreCase("")) {
                         wardNumberBinding.phoneNo.setText(mobileNo);
                     } else {
