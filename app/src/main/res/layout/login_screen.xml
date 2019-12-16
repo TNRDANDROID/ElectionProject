@@ -38,7 +38,7 @@
 
                 <TextView
                     android:id="@+id/textView2"
-                    style="@style/font_poppins_regular"
+                    style="@style/font_poppins_semibold"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/ivIlls"
@@ -193,7 +193,7 @@
                     android:layout_gravity="bottom">
                     <TextView
                         android:id="@+id/tv_version_number"
-                        style="@style/font_poppins_regular"
+                        style="@style/font_poppins_semibold"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="@dimen/_13sdp"
@@ -206,7 +206,7 @@
 
                     <TextView
                         android:id="@+id/nic_name"
-                        style="@style/font_poppins_regular"
+                        style="@style/font_poppins_semibold"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="@dimen/_13sdp"

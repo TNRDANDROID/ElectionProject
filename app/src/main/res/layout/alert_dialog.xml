@@ -20,7 +20,7 @@
             android:gravity="center"
             android:padding="@dimen/padding"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-            android:textColor="#000080"
+            android:textColor="@color/colorPrimary"
             style="@style/font_circular_book" />
 
         <View
@@ -43,7 +43,7 @@
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
                 android:text="CANCEL"
-                android:textColor="@color/colorAccent"
+                android:textColor="@color/colorPrimary"
                 android:textSize="@dimen/menu_title_size"
                 android:visibility="gone" />
 
@@ -57,7 +57,7 @@
                 android:background="@android:color/transparent"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:text="OK"
-                android:textColor="@color/colorAccent"
+                android:textColor="@color/colorPrimary"
                 android:textSize="@dimen/menu_title_size" />
         </LinearLayout>
 
