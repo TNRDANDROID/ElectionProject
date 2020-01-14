@@ -308,7 +308,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
 
     @Override
     public void OnError(VolleyError volleyError) {
-        Utils.showAlert(this, "Login Again");
+        Utils.showAlert(this, "Server Error!");
     }
 
 //    @Override
