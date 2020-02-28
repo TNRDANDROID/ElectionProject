@@ -4,7 +4,7 @@
     <data>
         <variable
             name="activity"
-            type="com.nic.electionwardnocall.activity.LoginScreen" />
+            type="com.nic.electionproject.activity.LoginScreen" />
     </data>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -152,7 +152,7 @@
                     android:layout_marginEnd="24dp"
                     android:layout_marginTop="@dimen/_28sdp"
 
-                    android:onClick="@{()-> activity.checkLoginScreen()}"
+                    android:onClick="@{()-> activity.showHomeScreen()}"
                     android:text="Login"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
                     android:textAllCaps="false"

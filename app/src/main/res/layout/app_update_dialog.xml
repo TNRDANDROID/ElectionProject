@@ -3,7 +3,7 @@
     <data>
         <variable
             name="activity"
-            type="com.nic.electionwardnocall.activity.AppUpdateDialog" />
+            type="com.nic.electionproject.activity.AppUpdateDialog" />
     </data>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:customfontdemo="http://schemas.android.com/apk/res-auto"
@@ -55,7 +55,7 @@
             android:gravity="center"
             android:lineSpacingExtra="5dp"
             android:padding="@dimen/padding"
-            android:text="You need to update TNSEC RO Contacts"
+            android:text="You need to update TNSEC"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
 
             />
@@ -70,7 +70,7 @@
             android:gravity="center"
             android:lineSpacingExtra="5dp"
             android:padding="@dimen/padding"
-            android:text="This version of TNSEC RO Contacts is no longer supported. Please go to Official Site and install new version"
+            android:text="This version of TNSEC is no longer supported. Please go to Official Site and install new version"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
 
             />

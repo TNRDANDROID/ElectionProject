@@ -5,7 +5,7 @@
 
         <variable
             name="activity"
-            type="com.nic.electionwardnocall.activity.SplashScreen" />
+            type="com.nic.electionproject.activity.SplashScreen" />
     </data>
 
     <RelativeLayout
