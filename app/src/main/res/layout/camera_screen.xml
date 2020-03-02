@@ -10,23 +10,36 @@
         android:id="@+id/parent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#FFF"
+        android:background="@drawable/background_gradient"
         android:orientation="vertical">
 
-        <RelativeLayout
+        <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/header_layout"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@drawable/background_gradient">
+            android:layout_height="wrap_content"
+            android:background="@drawable/background_gradient"
+            android:fitsSystemWindows="true">
 
-            <TextView
-                 android:layout_width="wrap_content"
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_marginTop="@dimen/margin"
-                android:text="Take Photo"
-                android:textColor="@android:color/white"
-                android:textSize="18sp" />
+                android:layout_gravity="center"
+                app:layout_scrollFlags="scroll|enterAlways|snap"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:layout_marginTop="@dimen/margin"
+                        android:text="Take Photo"
+                        android:textColor="@android:color/white"
+                        android:textSize="18sp" />
 
             <ImageView
                 android:id="@+id/back_img"
@@ -34,7 +47,6 @@
                 android:layout_height="@dimen/_30sdp"
                 android:layout_alignParentStart="true"
                 android:layout_centerInParent="true"
-                android:layout_marginLeft="@dimen/_12sdp"
                 android:onClick="@{()-> activity.onBackPressed()}"
                 android:src="@mipmap/back_arrow" />
 
@@ -48,7 +60,12 @@
                 android:onClick="@{()-> activity.homePage()}"
                 android:src="@mipmap/home_img" />
 
-        </RelativeLayout>
+                </RelativeLayout>
+
+
+            </androidx.appcompat.widget.Toolbar>
+
+        </com.google.android.material.appbar.AppBarLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -60,8 +77,7 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_20sdp">
+                android:layout_height="wrap_content">
 
 
                 <RelativeLayout
@@ -73,7 +89,6 @@
                         android:id="@+id/district_card"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/toolbar"
                         android:layout_centerInParent="true"
                         android:layout_centerHorizontal="true"
                         android:layout_margin="15dp"
@@ -165,13 +180,13 @@
                     android:layout_height="@dimen/_30sdp"
                     android:layout_alignParentBottom="true"
                     android:layout_centerInParent="true"
-                    android:background="@drawable/button_background"
+                    android:background="@drawable/add_button_new"
                     android:onClick="@{()-> activity.saveActivityImage()}"
 
 
                     android:text="save image"
                     android:textAllCaps="true"
-                    android:textColor="@android:color/white" />
+                    android:textColor="@android:color/black" />
             </RelativeLayout>
 
         </LinearLayout>

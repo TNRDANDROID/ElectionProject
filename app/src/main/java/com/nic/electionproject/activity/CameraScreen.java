@@ -48,6 +48,7 @@ import com.nic.electionproject.databinding.CameraScreenBinding;
 import com.nic.electionproject.support.MyLocationListener;
 import com.nic.electionproject.utils.CameraUtils;
 import com.nic.electionproject.utils.Utils;
+import com.nic.electionproject.windowpreferences.WindowPreferencesManager;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -90,6 +91,8 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         cameraScreenBinding = DataBindingUtil.setContentView(this, R.layout.camera_screen);
         cameraScreenBinding.setActivity(this);
+        WindowPreferencesManager windowPreferencesManager = new WindowPreferencesManager(this);
+        windowPreferencesManager.applyEdgeToEdgePreference(getWindow());
         try {
             dbHelper = new DBHelper(this);
             db = dbHelper.getWritableDatabase();
