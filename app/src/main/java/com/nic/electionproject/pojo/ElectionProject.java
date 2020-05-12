@@ -13,7 +13,15 @@ public class ElectionProject {
 
     private String blockCode;
 
-    private String SchemeName;
+    public String getStaffName() {
+        return staffName;
+    }
+
+    public void setStaffName(String staffName) {
+        this.staffName = staffName;
+    }
+
+    private String staffName;
 
     private String selectedBlockCode;
 
@@ -121,5 +129,18 @@ public class ElectionProject {
     public void setLongitude(String longitude) {
         Longitude = longitude;
     }
+    public Integer getPhotoID() {
+        return photoID;
+    }
 
+    public void setPhotoID(Integer photoID) {
+        this.photoID = photoID;
+    }
+
+    private Integer photoID;
+
+    public Integer getId() {
+        return id;
+    }
+    private Integer id;
 }

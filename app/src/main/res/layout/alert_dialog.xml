@@ -74,7 +74,7 @@
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
                 android:text="CANCEL"
-                android:textColor="@color/black"
+                android:textColor="@color/colorPrimary"
                 android:textSize="@dimen/menu_title_size"
                 android:visibility="gone" />
 
@@ -88,7 +88,7 @@
                 android:background="@drawable/background_gradient"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:text="OK"
-                android:textColor="@color/black"
+                android:textColor="@color/colorPrimary"
                 android:textSize="@dimen/menu_title_size" />
         </LinearLayout>
 

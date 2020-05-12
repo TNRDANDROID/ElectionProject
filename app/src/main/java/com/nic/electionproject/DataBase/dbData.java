@@ -61,6 +61,8 @@ public class dbData {
                     Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
 
                     ElectionProject card = new ElectionProject();
+                    card.setPhotoID(cursor.getInt(cursor
+                            .getColumnIndex(AppConstant.KEY_PHOTO_ID)));
                  /*   card.setDistictCode(cursor.getString(cursor
                             .getColumnIndexOrThrow(AppConstant.DISTRICT_CODE)));
                     card.setBlockCode(cursor.getString(cursor

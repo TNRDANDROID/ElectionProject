@@ -20,7 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.VolleyError;
 import com.nic.electionproject.DataBase.dbData;
-import com.nic.electionproject.Fragment.SlideshowDialogFragment;
+import com.nic.electionproject.fragment.SlideshowDialogFragment;
 import com.nic.electionproject.R;
 import com.nic.electionproject.Session.PrefManager;
 import com.nic.electionproject.adapter.FullImageAdapter;
@@ -191,7 +191,8 @@ public class FullImageActivity extends AppCompatActivity implements View.OnClick
             @Override
             public void onClick(View view, int position) {
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("images", activityImage);
+                prefManager.setLocalSaveHaccpList(activityImage);
+//                bundle.putSerializable("images", activityImage);
                 bundle.putInt("position", position);
 
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();

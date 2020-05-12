@@ -363,6 +363,8 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
 
     public void saveActivityImage() {
         dbData.open();
+        String whereClause = "";
+        String[] whereArgs = null;
 
         ImageView imageView = (ImageView) findViewById(R.id.image_view);
         byte[] imageInByte = new byte[0];
@@ -374,8 +376,8 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
             imageInByte = baos.toByteArray();
             image_str = Base64.encodeToString(imageInByte, Base64.DEFAULT);
 
-
-            ContentValues values = new ContentValues();
+            if (getIntent().getStringExtra(AppConstant.KEY_PURPOSE).equalsIgnoreCase("Insert")) {
+                ContentValues values = new ContentValues();
             /*values.put(AppConstant.DISTRICT_CODE, prefManager.getDistrictCode());
             values.put(AppConstant.BLOCK_CODE, prefManager.getBlockCode());*/
 
@@ -387,15 +389,36 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
 
 
             long id = db.insert(DBHelper.POLLING_STATION_IMAGE, null, values);
+                if (id > 0) {
+                    Toasty.success(this, "Success!", Toast.LENGTH_LONG, true).show();
+                    super.onBackPressed();
+                    overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
+                }
+            } else if (getIntent().getStringExtra(AppConstant.KEY_PURPOSE).equalsIgnoreCase("Update")) {
 
-            if (id > 0) {
-                Toasty.success(this, "Success!", Toast.LENGTH_LONG, true).show();
-                super.onBackPressed();
-                overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
+                String photo_id = getIntent().getStringExtra(AppConstant.KEY_PHOTO_ID);
+
+                ContentValues values = new ContentValues();
+                values.put(AppConstant.KEY_LATITUDE, offlatTextValue.toString());
+                values.put(AppConstant.KEY_LONGITUDE, offlongTextValue.toString());
+                values.put(AppConstant.IMAGE, image_str.trim());
+
+                whereClause = "id = ?";
+                whereArgs = new String[]{photo_id};
+                dbData.open();
+
+                long id = db.update(DBHelper.POLLING_STATION_IMAGE, values, whereClause, whereArgs);
+
+
+                if (id > 0) {
+                    Toasty.success(this, "Updated!", Toast.LENGTH_LONG, true).show();
+                    homePage();
+                }
+                Log.d("PollingStationImageId", String.valueOf(id));
             }
 
 
-             Log.d("PollingStationImageId", String.valueOf(id));
+
 
         } catch (Exception e) {
             Utils.showAlert(CameraScreen.this, "Atleast Capture one Photo");

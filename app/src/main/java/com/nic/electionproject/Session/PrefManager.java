@@ -3,7 +3,14 @@ package com.nic.electionproject.Session;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.nic.electionproject.constant.AppConstant;
+import com.nic.electionproject.pojo.ElectionProject;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -46,6 +53,7 @@ public class PrefManager {
     private static final String MOTIVATOR_ID = "motivator_id";
     private static final String SCHEDULE_MASTER_ID = "schedule_master_id";
     private static final String KEY_JSON_OBJECT_DELETED_KEY= "KEY_JSON_OBJECT_DELETED_KEY";
+    private static final String KEY_HACCP_LOCAL_SAVE = "Haccp_Local_Save";
 
 
     public PrefManager(Context context) {
@@ -212,7 +220,23 @@ public class PrefManager {
 
 
 
+    public void setLocalSaveHaccpList(List<ElectionProject> localSaveHaccp) {
+        Gson gson = new Gson();
+        String json = gson.toJson(localSaveHaccp);
+        editor.putString(KEY_HACCP_LOCAL_SAVE, json);
+        editor.commit();
+    }
 
+    public String getLocalSaveHaccpString() {
+        return pref.getString(KEY_HACCP_LOCAL_SAVE, null);
+    }
+
+    public ArrayList<ElectionProject> getLocalSaveHaccpList() {
+        Type listType = new TypeToken<ArrayList<ElectionProject>>() {
+        }.getType();
+        ArrayList<ElectionProject> CCPListNew = new Gson().fromJson(getLocalSaveHaccpString(), listType);
+        return CCPListNew;
+    }
 
 
     public void clearSharedPreferences(Context context) {

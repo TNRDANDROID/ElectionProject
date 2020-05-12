@@ -23,6 +23,7 @@ import com.nic.electionproject.R;
 import com.nic.electionproject.Session.PrefManager;
 import com.nic.electionproject.api.Api;
 import com.nic.electionproject.api.ServerResponse;
+import com.nic.electionproject.constant.AppConstant;
 import com.nic.electionproject.databinding.DashboardBinding;
 import com.nic.electionproject.dialog.MyDialog;
 import com.nic.electionproject.pojo.ElectionProject;
@@ -189,8 +190,15 @@ public class Dashboard extends AppCompatActivity implements MyDialog.myOnClickLi
         overridePendingTransition(R.anim.fleft, R.anim.fhelper);
     }
 
+    public void attendance(){
+        Intent intent = new Intent(this,AttendanceScreen.class);
+        startActivity(intent);
+        overridePendingTransition(R.anim.fleft, R.anim.fhelper);
+    }
+
     public void cameraScreen(){
         Intent intent = new Intent(this,CameraScreen.class);
+        intent.putExtra(AppConstant.KEY_PURPOSE, "Insert");
         startActivity(intent);
         overridePendingTransition(R.anim.fleft, R.anim.fhelper);
     }

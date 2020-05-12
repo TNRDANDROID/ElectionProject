@@ -30,7 +30,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                app:layout_scrollFlags="scroll|enterAlways|snap"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
                 <RelativeLayout
@@ -120,8 +119,7 @@
                             android:paddingLeft="5dp"
                             android:paddingRight="5dp"
                             android:text="District:"
-                            android:textAlignment="center"
-                            android:textColor="@android:color/black"
+                             android:textColor="@android:color/black"
                             android:textSize="18sp"
                             android:textStyle="normal" />
 
@@ -159,8 +157,7 @@
                             android:paddingLeft="5dp"
                             android:paddingRight="5dp"
                             android:text="Block:"
-                            android:textAlignment="center"
-                            android:textColor="@android:color/black"
+                             android:textColor="@android:color/black"
                             android:textSize="18sp"
                             android:textStyle="normal" />
 
@@ -259,6 +256,8 @@
                             android:layout_height="170dp"
                             android:layout_margin="10dp"
                             android:clickable="true"
+                            android:onClick="@{()-> activity.attendance()}"
+
                             android:foreground="?android:attr/selectableItemBackground"
                             card_view:cardCornerRadius="5dp"
                             card_view:cardElevation="3dp">
@@ -441,7 +440,7 @@
 
                             card_view:cardCornerRadius="8dp"
                             card_view:cardElevation="3dp"
-                            >
+                            android:focusable="true">
                             <LinearLayout
 
                                 android:layout_width="match_parent"
@@ -453,7 +452,8 @@
                                     android:layout_width="64dp"
                                     android:layout_height="64dp"
                                     android:background="@drawable/cerclebackgroundpurple"
-                                     android:padding="10dp"/>
+                                     android:padding="10dp"
+                                    android:contentDescription="TODO" />
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
@@ -491,8 +491,7 @@
             android:layout_gravity="bottom"
             android:padding="15dp"
             android:text="Sofware Designed &amp; Developed by NIC"
-            android:textAlignment="center"
-            android:textColor="@android:color/white"
+             android:textColor="@android:color/white"
             android:textSize="@dimen/_15sdp"
             android:textStyle="italic"
             android:visibility="gone"

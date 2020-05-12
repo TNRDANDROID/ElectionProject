@@ -48,5 +48,7 @@ public class AppConstant {
     public static String DESCRIPTION = "image_description";
     public static String KEY_LATITUDE = "lat";
     public static String KEY_LONGITUDE = "long";
+    public static String KEY_PURPOSE = "purpose";
+    public static String KEY_PHOTO_ID = "id";
 
 }

@@ -11,6 +11,7 @@
     <string name="font_poppins_bold">Poppins-Bold.ttf</string>
     <string name="init_vector">2SN22SkJGDyOAXUU</string>
     <string name="no_internet">Your internet seems to be offline!</string>
+    <string name="achanthi_sundar_m">Achanthi Sundar M</string>
 
 
     <string-array name="cat_textfield_exposed_dropdown_content" translatable="false">

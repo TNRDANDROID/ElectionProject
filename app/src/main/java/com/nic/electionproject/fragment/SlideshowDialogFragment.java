@@ -1,20 +1,26 @@
-package com.nic.electionproject.Fragment;
+package com.nic.electionproject.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
+import com.nic.electionproject.DataBase.dbData;
 import com.nic.electionproject.R;
+import com.nic.electionproject.Session.PrefManager;
+import com.nic.electionproject.activity.CameraScreen;
+import com.nic.electionproject.constant.AppConstant;
+import com.nic.electionproject.databinding.FragmentImageSliderBinding;
 import com.nic.electionproject.pojo.ElectionProject;
 
 import java.util.ArrayList;
@@ -23,11 +29,14 @@ import java.util.ArrayList;
 public class SlideshowDialogFragment extends DialogFragment {
     private String TAG = SlideshowDialogFragment.class.getSimpleName();
     private ArrayList<ElectionProject> images;
-    private ViewPager viewPager;
-    private MyViewPagerAdapter myViewPagerAdapter;
-    private TextView lblCount, lblTitle, lblDescription,lblDate,lblType;
-    private int selectedPosition = 0;
 
+    private MyViewPagerAdapter myViewPagerAdapter;
+
+    private int selectedPosition = 0;
+    public dbData dbData;
+    public FragmentImageSliderBinding fragmentImageSliderBinding;
+    private Context context;
+    private PrefManager prefManager;
    public static SlideshowDialogFragment newInstance() {
         SlideshowDialogFragment f = new SlideshowDialogFragment();
         return f;
@@ -36,31 +45,33 @@ public class SlideshowDialogFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_image_slider, container, false);
-        viewPager = (ViewPager) v.findViewById(R.id.viewpager);
-        lblCount = (TextView) v.findViewById(R.id.lbl_count);
-        lblTitle = (TextView) v.findViewById(R.id.title);
-        lblDescription = (TextView) v.findViewById(R.id.description);
-        lblType = (TextView) v.findViewById(R.id.type);
-        lblDate = (TextView) v.findViewById(R.id.date);
 
-        images = (ArrayList<ElectionProject>) getArguments().getSerializable("images");
+        fragmentImageSliderBinding = DataBindingUtil.inflate(
+                inflater, R.layout.fragment_image_slider, container, false);
+        View view = fragmentImageSliderBinding.getRoot();
+        //here data must be an instance of the class MarsDataProvider
+
+        this.context = getActivity();
+        dbData = new dbData(getActivity());
+        prefManager = new PrefManager(getActivity());
+      /*  images = (ArrayList<ElectionProject>) getArguments().getSerializable("images");*/
+        images = prefManager.getLocalSaveHaccpList();
         selectedPosition = getArguments().getInt("position");
 
         Log.i(TAG, "position: " + selectedPosition);
         Log.i(TAG, "images size: " + images.size());
 
         myViewPagerAdapter = new MyViewPagerAdapter();
-        viewPager.setAdapter(myViewPagerAdapter);
-        viewPager.addOnPageChangeListener(viewPagerPageChangeListener);
+        fragmentImageSliderBinding.viewpager.setAdapter(myViewPagerAdapter);
+        fragmentImageSliderBinding.viewpager.addOnPageChangeListener(viewPagerPageChangeListener);
 
         setCurrentItem(selectedPosition);
 
-        return v;
+        return view;
     }
 
     private void setCurrentItem(int position) {
-        viewPager.setCurrentItem(position, false);
+        fragmentImageSliderBinding.viewpager.setCurrentItem(position, false);
         displayMetaInfo(selectedPosition);
     }
 
@@ -84,15 +95,35 @@ public class SlideshowDialogFragment extends DialogFragment {
     };
 
     private void displayMetaInfo(int position) {
-        lblCount.setText((position + 1) + " of " + images.size());
+        fragmentImageSliderBinding.lblCount.setText((position + 1) + " of " + images.size());
 
-        ElectionProject image = images.get(position);
+       final ElectionProject image = images.get(position);
         if(!image.getDescription().equalsIgnoreCase("")){
-            lblDescription.setVisibility(View.VISIBLE);
-            lblDescription.setText(image.getDescription());
+            fragmentImageSliderBinding.description.setVisibility(View.VISIBLE);
+            fragmentImageSliderBinding.description.setText(image.getDescription());
         }else{
-            lblDescription.setVisibility(View.GONE);
+            fragmentImageSliderBinding.description.setVisibility(View.GONE);
         }
+//        if (getArguments().getString("OnOffType").equalsIgnoreCase("Online")) {
+//            fragmentImageSliderBinding.editImageLayout.setVisibility(View.GONE);
+//        } else {
+//            fragmentImageSliderBinding.editImageLayout.setVisibility(View.VISIBLE);
+//        }
+        fragmentImageSliderBinding.editImageLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Context context = v.getContext();
+                Integer photoId = image.getPhotoID();
+                Intent intent = new Intent(context, CameraScreen.class);
+                intent.putExtra(AppConstant.KEY_PURPOSE, "Update");
+                intent.putExtra(AppConstant.KEY_PHOTO_ID, String.valueOf(photoId));
+                context.startActivity(intent);
+                getActivity().overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+            }
+
+        });
+
     }
 
     @Override
