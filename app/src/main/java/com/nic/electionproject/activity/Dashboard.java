@@ -86,6 +86,7 @@ public class Dashboard extends AppCompatActivity implements MyDialog.myOnClickLi
         dashboardBinding.attendanecard.setTranslationX(800);
         dashboardBinding.cameracard.setTranslationX(800);
         dashboardBinding.votecountcard.setTranslationX(800);
+
         dashboardBinding.viewPollingStationImage.setTranslationX(800);
 
 
